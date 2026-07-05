@@ -45,6 +45,16 @@ NOTION_NOTES_DATABASE_ID=replace-with-notes-database-id
 
 The database should have a `Name` title property and a `Date` date property. The note content is rendered from each Notion page's blocks.
 
+## Projects
+
+The `/projects` page reads projects from a Notion database. Share the database with your Notion integration, then add this value to `.env.local`:
+
+```env
+NOTION_PROJECTS_DATABASE_ID=replace-with-projects-database-id
+```
+
+The database should have a `Name` title property plus project fields for `Description`, `Logo URL`, `Image URLs`, `Link`, and `Status`. Optional URL fields can be Notion URL properties, rich text with comma/newline-separated URLs, or files properties for images.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
