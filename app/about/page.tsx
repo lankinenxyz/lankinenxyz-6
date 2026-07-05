@@ -116,7 +116,7 @@ export default function About() {
             </section>
           </div>
 
-          <div className="min-w-0 space-y-10 lg:overflow-y-auto lg:pr-2">
+          <div className="scrollbar-none min-w-0 space-y-10 lg:overflow-y-auto lg:pr-2">
             <section aria-labelledby="experience-heading">
               <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
                 <div>
