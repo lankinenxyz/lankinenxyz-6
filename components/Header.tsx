@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 const primaryLinks = [
   { label: "About", href: "/about", shortcut: "1" },
@@ -24,6 +24,7 @@ function getShortcutModifier() {
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shortcutModifier] = useState(getShortcutModifier);
@@ -36,6 +37,14 @@ export default function Header() {
       const isModifierPressed = isMac ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
 
       if (!isModifierPressed || event.altKey || event.shiftKey || isContactOpen) {
+        return;
+      }
+
+      if (event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setIsContactOpen(true);
+        setStatus("");
+
         return;
       }
 
@@ -58,6 +67,8 @@ export default function Header() {
     if (!isContactOpen) {
       return;
     }
+
+    nameInputRef.current?.select();
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -199,9 +210,10 @@ export default function Header() {
             <form className="grid gap-3" onSubmit={onSubmit}>
               <label className="grid gap-2 font-mono text-xs uppercase tracking-[0.08em] text-white/62">
                 Name *
-                <input
-                  name="name"
-                  required
+                  <input
+                    ref={nameInputRef}
+                    name="name"
+                    required
                   className="h-11 border border-white/12 bg-black/24 px-3 font-sans text-sm normal-case tracking-normal text-white outline-none transition placeholder:text-white/28 focus:border-lime-100/60"
                   placeholder="Your name"
                 />
