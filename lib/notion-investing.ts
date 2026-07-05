@@ -30,7 +30,7 @@ type NotionProperty =
   | { type: "url"; url: string | null }
   | { type: "select"; select: { name?: string } | null }
   | { type: "status"; status: { name?: string } | null }
-  | { type: string; [key: string]: unknown };
+  | { type: string;[key: string]: unknown };
 
 type NotionPage = {
   id: string;
@@ -131,7 +131,7 @@ export async function getMarketAnalysisEntry(id: string): Promise<MarketAnalysis
 async function getMarketAnalysis(token: string, databaseId: string): Promise<MarketAnalysis[]> {
   const pages = await queryDatabase(token, databaseId);
 
-  return sortByDateAsc(pages.map(toMarketAnalysis));
+  return sortByDateAsc(pages.map(toMarketAnalysis).toReversed());
 }
 
 async function getStocks(token: string, databaseId: string): Promise<Stock[]> {
@@ -146,7 +146,7 @@ async function getStocks(token: string, databaseId: string): Promise<Stock[]> {
       price: getNumber(page.properties, ["Price", "Cost", "Entry Price"]),
       currency: getChoice(page.properties, ["Currency", "Ccy"]),
       description: getPlainText(page.properties, ["Description", "Thesis", "Notes"]),
-    })),
+    })).toReversed(),
   );
 }
 
