@@ -59,9 +59,6 @@ export default function Other() {
                       <p className="font-mono text-xs uppercase tracking-[0.08em] text-white/34">
                         {String(index + 1).padStart(2, "0")}
                       </p>
-                      <span className="border border-white/12 bg-black/20 px-2 py-1 font-mono text-xs uppercase tracking-[0.08em] text-white/42 transition group-hover:border-lime-100/28 group-hover:text-lime-100/72">
-                        Soon
-                      </span>
                     </div>
                     <h2 className="mt-8 text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
                       {section.title}
