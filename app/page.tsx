@@ -8,7 +8,7 @@ export default function Home() {
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.86),rgba(0,0,0,0.32)_45%,rgba(0,0,0,0.72)),radial-gradient(circle_at_50%_120%,rgba(96,88,53,0.34),transparent_22rem)]" />
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col">
         <Header />
         <section id="home" className="grid flex-1 place-items-center">
           <div id="globe">

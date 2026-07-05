@@ -4,10 +4,10 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
 const primaryLinks = [
-  { label: "About" },
-  { label: "Notes" },
-  { label: "Projects" },
-  { label: "Other" },
+  { label: "About", href: "/about" },
+  { label: "Notes", href: "/notes" },
+  { label: "Projects", href: "/projects" },
+  { label: "Other", href: "/other" },
 ];
 
 const contactEmail = "elias@lankinen.xyz";
@@ -73,7 +73,7 @@ export default function Header() {
         <div className="hidden min-w-0 flex-1 gap-1 md:flex">
           {primaryLinks.map((link, index) => (
             <Link
-              href={`${link.label.toLowerCase()}`}
+              href={link.href}
               key={link.label}
               className="flex h-10 max-w-52 flex-1 items-center justify-between border border-white/10 bg-white/[0.09] px-4 text-white/86 backdrop-blur transition hover:bg-white/[0.16]"
             >
