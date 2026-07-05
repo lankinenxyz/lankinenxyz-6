@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Header from "@/components/Header";
 import { getInvestingData, type InvestingData, type Stock } from "@/lib/notion-investing";
 
