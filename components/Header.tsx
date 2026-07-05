@@ -11,6 +11,13 @@ const primaryLinks = [
   { label: "Other", href: "/other", shortcut: "4" },
 ];
 
+const otherLinks = [
+  { href: "/other/investing", shortcut: "1" },
+  { href: "/other/fitness", shortcut: "2" },
+  { href: "/other/watches", shortcut: "3" },
+  { href: "/other/travel", shortcut: "4" },
+];
+
 const contactEmail = "elias@lankinen.xyz";
 
 function getShortcutModifier() {
@@ -34,6 +41,18 @@ export default function Header() {
     const isMac = getShortcutModifier() === "⌘";
 
     function onKeyDown(event: KeyboardEvent) {
+      const otherLink = otherLinks.find((item) => item.shortcut === event.key || event.code === `Digit${item.shortcut}`);
+      const isOtherShortcutPressed = isMac
+        ? event.altKey && !event.ctrlKey && !event.metaKey
+        : event.ctrlKey && event.altKey && !event.metaKey;
+
+      if (pathname.startsWith("/other") && isOtherShortcutPressed && !event.shiftKey && !isContactOpen && otherLink) {
+        event.preventDefault();
+        router.push(otherLink.href);
+
+        return;
+      }
+
       const isModifierPressed = isMac ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
 
       if (!isModifierPressed || event.altKey || event.shiftKey || isContactOpen) {
@@ -48,7 +67,7 @@ export default function Header() {
         return;
       }
 
-      const link = primaryLinks.find((item) => item.shortcut === event.key);
+      const link = primaryLinks.find((item) => item.shortcut === event.key || event.code === `Digit${item.shortcut}`);
 
       if (!link) {
         return;
@@ -61,7 +80,7 @@ export default function Header() {
     window.addEventListener("keydown", onKeyDown);
 
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isContactOpen, router]);
+  }, [isContactOpen, pathname, router]);
 
   useEffect(() => {
     if (!isContactOpen) {
