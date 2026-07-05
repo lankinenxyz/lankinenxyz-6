@@ -30,6 +30,7 @@ type NotionProperty =
   | { type: "files"; files: NotionFile[] }
   | { type: "url"; url: string | null }
   | { type: "select"; select: { name?: string } | null }
+  | { type: "status"; status: { name?: string } | null }
   | { type: "number"; number: number | null }
   | { type: string; [key: string]: unknown };
 
@@ -101,6 +102,16 @@ export type Watch = {
   content?: OtherBlock[];
 };
 
+export type FitnessEntry = {
+  id: string;
+  title: string;
+  description: string;
+  date: string | null;
+  category: string;
+  imageUrl: string | null;
+  content?: OtherBlock[];
+};
+
 export async function getTravelDestinations(): Promise<TravelDestination[]> {
   const token = process.env.NOTION_API_KEY?.trim() ?? "";
   const databaseId = process.env.NOTION_TRAVEL_DATABASE_ID?.trim() ?? "";
@@ -142,6 +153,38 @@ export async function getWatches(): Promise<Watch[]> {
   return pages.map(toWatch);
 }
 
+export async function getFitnessEntries(): Promise<FitnessEntry[]> {
+  const token = process.env.NOTION_API_KEY?.trim() ?? "";
+  const databaseId = process.env.NOTION_FITNESS_DATABASE_ID?.trim() ?? "";
+
+  if (!isConfigured(token, databaseId)) {
+    return [];
+  }
+
+  const pages = await queryDatabase(token, databaseId);
+
+  return sortByDateDesc(pages.filter(isVisibleEntry).map(toFitnessEntry));
+}
+
+export async function getFitnessEntry(id: string): Promise<FitnessEntry | null> {
+  const token = process.env.NOTION_API_KEY?.trim() ?? "";
+
+  if (!isConfigured(token, process.env.NOTION_FITNESS_DATABASE_ID?.trim() ?? "")) {
+    return null;
+  }
+
+  const page = await getPage(token, id);
+
+  if (!isVisibleEntry(page)) {
+    return null;
+  }
+
+  return {
+    ...toFitnessEntry(page),
+    content: await getBlockChildren(token, page.id),
+  };
+}
+
 export async function getWatch(id: string): Promise<Watch | null> {
   const token = process.env.NOTION_API_KEY?.trim() ?? "";
 
@@ -161,7 +204,7 @@ function isConfigured(token: string, databaseId: string) {
   return [token, databaseId].every((value) => !placeholderValues.has(value) && !value.startsWith("replace-with-"));
 }
 
-async function queryDatabase(token: string, databaseId: string, sortProperty: string) {
+async function queryDatabase(token: string, databaseId: string, sortProperty?: string) {
   const pages: NotionPage[] = [];
   let cursor: string | null = null;
 
@@ -171,7 +214,7 @@ async function queryDatabase(token: string, databaseId: string, sortProperty: st
       body: JSON.stringify({
         page_size: 50,
         start_cursor: cursor ?? undefined,
-        sorts: [{ property: sortProperty, direction: "descending" }],
+        sorts: sortProperty ? [{ property: sortProperty, direction: "descending" }] : undefined,
       }),
     });
 
@@ -255,6 +298,17 @@ function toWatch(page: NotionPage): Watch {
   };
 }
 
+function toFitnessEntry(page: NotionPage): FitnessEntry {
+  return {
+    id: page.id,
+    title: getTitle(page.properties),
+    description: getPlainText(page.properties, ["Description", "Summary", "Excerpt"]),
+    date: getDate(page.properties),
+    category: getPlainText(page.properties, ["Category", "Type"]),
+    imageUrl: getImageUrl(page),
+  };
+}
+
 function getTitle(properties: Record<string, NotionProperty>) {
   const property = properties.Name ?? findProperty(properties, "title");
 
@@ -289,6 +343,42 @@ function getPlainText(properties: Record<string, NotionProperty>, names: string[
   }
 
   return "";
+}
+
+function getDate(properties: Record<string, NotionProperty>) {
+  const property = getNamedProperty(properties, ["Date"]);
+
+  if (!isDateProperty(property)) {
+    return null;
+  }
+
+  return property.date?.start ?? null;
+}
+
+function getStatus(properties: Record<string, NotionProperty>) {
+  const property = getNamedProperty(properties, ["Status", "State"]);
+
+  if (isStatusProperty(property)) {
+    return property.status?.name ?? "";
+  }
+
+  if (isSelectProperty(property)) {
+    return property.select?.name ?? "";
+  }
+
+  if (isRichTextProperty(property)) {
+    return richTextToPlainText(property.rich_text);
+  }
+
+  return "";
+}
+
+function isVisibleEntry(page: NotionPage) {
+  if (!getNamedProperty(page.properties, ["Status", "State"])) {
+    return true;
+  }
+
+  return getStatus(page.properties).toLowerCase() === "published";
 }
 
 function getImageUrl(page: NotionPage) {
@@ -359,8 +449,26 @@ function isSelectProperty(property: NotionProperty | undefined): property is { t
   return property?.type === "select";
 }
 
+function isStatusProperty(property: NotionProperty | undefined): property is { type: "status"; status: { name?: string } | null } {
+  return property?.type === "status";
+}
+
 function isNumberProperty(property: NotionProperty | undefined): property is { type: "number"; number: number | null } {
   return property?.type === "number";
+}
+
+function sortByDateDesc<T extends { date: string | null }>(items: T[]) {
+  return [...items].sort((a, b) => toTimestamp(b.date) - toTimestamp(a.date));
+}
+
+function toTimestamp(value: string | null) {
+  if (!value) {
+    return 0;
+  }
+
+  const timestamp = new Date(value).getTime();
+
+  return Number.isNaN(timestamp) ? 0 : timestamp;
 }
 
 function toOtherBlock(block: NotionBlock): Omit<OtherBlock, "children"> {

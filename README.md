@@ -107,6 +107,27 @@ The watches database should have this structure:
 
 The page content shown after opening a watch comes from the Notion page body blocks. Use that body to explain how you got it, why it matters, or any collecting notes.
 
+## Fitness
+
+The `/other/fitness` page reads fitness content from a Notion database. Share the database with your Notion integration, then add this value to `.env.local`:
+
+```env
+NOTION_FITNESS_DATABASE_ID=replace-with-fitness-database-id
+```
+
+A practical fitness database structure is:
+
+| Property | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `Name` | Title | Yes | Workout, routine, program, or log title. |
+| `Status` | Status or select | Recommended | If present, only entries with `Published` are shown. If omitted, all entries are shown. |
+| `Date` | Date | Optional | Useful for workout logs, progress updates, or routine changes. |
+| `Category` | Select | Optional | Example values: `Routine`, `Workout`, `Recovery`, `Progress`, `Nutrition`. |
+| `Description` | Rich text | Optional | Preview text for a future list/grid page. Also consider `Summary` or `Excerpt`. |
+| `Image` | Files, URL, rich text URL, or page cover | Optional | Main visual if the Fitness page becomes image-based. |
+
+The full entry content is rendered from each Notion page body blocks, matching Notes, Travel, and Watches.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
