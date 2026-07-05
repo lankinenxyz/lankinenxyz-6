@@ -25,6 +25,8 @@ type NotionProperty =
   | { type: "title"; title: NotionRichText[] }
   | { type: "rich_text"; rich_text: NotionRichText[] }
   | { type: "date"; date: { start?: string | null } | null }
+  | { type: "select"; select: { name?: string } | null }
+  | { type: "status"; status: { name?: string } | null }
   | { type: string; [key: string]: unknown };
 
 type NotionPage = {
@@ -72,11 +74,14 @@ export type NoteBlock = {
 export type Note = {
   id: string;
   name: string;
+  description: string;
   date: string | null;
   content: NoteBlock[];
 };
 
-export async function getNotes(): Promise<Note[]> {
+export type NoteSummary = Omit<Note, "content">;
+
+export async function getNotes(): Promise<NoteSummary[]> {
   const token = process.env.NOTION_API_KEY?.trim() ?? "";
   const databaseId = process.env.NOTION_NOTES_DATABASE_ID?.trim() ?? "";
 
@@ -86,14 +91,27 @@ export async function getNotes(): Promise<Note[]> {
 
   const pages = await queryDatabase(token, databaseId);
 
-  return Promise.all(
-    pages.map(async (page) => ({
-      id: page.id,
-      name: getTitle(page.properties),
-      date: getDate(page.properties),
-      content: await getPageContent(token, page.id),
-    })),
-  );
+  return pages.filter(isPublished).map(toNoteSummary);
+}
+
+export async function getNote(id: string): Promise<Note | null> {
+  const token = process.env.NOTION_API_KEY?.trim() ?? "";
+  const databaseId = process.env.NOTION_NOTES_DATABASE_ID?.trim() ?? "";
+
+  if (!isConfigured(token, databaseId)) {
+    return null;
+  }
+
+  const page = await getPage(token, id);
+
+  if (!isPublished(page)) {
+    return null;
+  }
+
+  return {
+    ...toNoteSummary(page),
+    content: await getPageContent(token, page.id),
+  };
 }
 
 function isConfigured(token: string, databaseId: string) {
@@ -124,6 +142,10 @@ async function queryDatabase(token: string, databaseId: string) {
   } while (cursor);
 
   return pages;
+}
+
+async function getPage(token: string, pageId: string) {
+  return notionFetch<NotionPage>(token, `/pages/${pageId}`, { method: "GET" });
 }
 
 async function getPageContent(token: string, pageId: string) {
@@ -188,6 +210,55 @@ function getTitle(properties: Record<string, NotionProperty>) {
   return richTextToPlainText(property.title) || "Untitled";
 }
 
+function toNoteSummary(page: NotionPage): NoteSummary {
+  return {
+    id: page.id,
+    name: getTitle(page.properties),
+    description: getPlainText(page.properties, ["Description", "Summary", "Excerpt"]),
+    date: getDate(page.properties),
+  };
+}
+
+function isPublished(page: NotionPage) {
+  return getStatus(page.properties).toLowerCase() === "published";
+}
+
+function getStatus(properties: Record<string, NotionProperty>) {
+  const property = getNamedProperty(properties, ["Status", "State", "Published"]);
+
+  if (isStatusProperty(property)) {
+    return property.status?.name ?? "";
+  }
+
+  if (isSelectProperty(property)) {
+    return property.select?.name ?? "";
+  }
+
+  if (isRichTextProperty(property)) {
+    return richTextToPlainText(property.rich_text);
+  }
+
+  return "";
+}
+
+function getPlainText(properties: Record<string, NotionProperty>, names: string[]) {
+  const property = getNamedProperty(properties, names);
+
+  if (isRichTextProperty(property)) {
+    return richTextToPlainText(property.rich_text);
+  }
+
+  if (isTitleProperty(property)) {
+    return richTextToPlainText(property.title);
+  }
+
+  if (isSelectProperty(property)) {
+    return property.select?.name ?? "";
+  }
+
+  return "";
+}
+
 function getDate(properties: Record<string, NotionProperty>) {
   const property = properties.Date ?? findProperty(properties, "date");
 
@@ -202,6 +273,10 @@ function findProperty(properties: Record<string, NotionProperty>, type: string) 
   return Object.values(properties).find((property) => property.type === type);
 }
 
+function getNamedProperty(properties: Record<string, NotionProperty>, names: string[]) {
+  return names.map((name) => properties[name]).find(Boolean);
+}
+
 function isTitleProperty(property: NotionProperty | undefined): property is { type: "title"; title: NotionRichText[] } {
   return property?.type === "title" && Array.isArray(property.title);
 }
@@ -210,6 +285,18 @@ function isDateProperty(
   property: NotionProperty | undefined,
 ): property is { type: "date"; date: { start?: string | null } | null } {
   return property?.type === "date";
+}
+
+function isRichTextProperty(property: NotionProperty | undefined): property is { type: "rich_text"; rich_text: NotionRichText[] } {
+  return property?.type === "rich_text" && Array.isArray(property.rich_text);
+}
+
+function isSelectProperty(property: NotionProperty | undefined): property is { type: "select"; select: { name?: string } | null } {
+  return property?.type === "select";
+}
+
+function isStatusProperty(property: NotionProperty | undefined): property is { type: "status"; status: { name?: string } | null } {
+  return property?.type === "status";
 }
 
 function toNoteBlock(block: NotionBlock): Omit<NoteBlock, "children"> {

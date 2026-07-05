@@ -43,7 +43,7 @@ NOTION_API_KEY=replace-with-notion-integration-token
 NOTION_NOTES_DATABASE_ID=replace-with-notes-database-id
 ```
 
-The database should have a `Name` title property and a `Date` date property. The note content is rendered from each Notion page's blocks.
+The database should have a `Name` title property, a `Date` date property, and a `Status` status/select property. Only notes with `Status` set to `Published` are shown. Optional `Description`, `Summary`, or `Excerpt` properties are shown as the preview text on the notes index. The full note content is rendered from each Notion page's blocks on its own detail page.
 
 ## Projects
 
