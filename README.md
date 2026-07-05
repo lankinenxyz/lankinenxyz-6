@@ -89,6 +89,24 @@ The travel database should have this structure:
 
 The page content shown after opening a destination comes from the Notion page body blocks.
 
+## Watches
+
+The `/other/watches` page reads watches from a Notion database. Share the database with your Notion integration, then add this value to `.env.local`:
+
+```env
+NOTION_WATCHES_DATABASE_ID=replace-with-watches-database-id
+```
+
+The watches database should have this structure:
+
+| Property | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `Name` | Title | Yes | Watch name or reference, e.g. `Omega Speedmaster Professional`. |
+| `Image` | Files, URL, or rich text URL | Recommended | Main grid image. Also supports `Images`, `Photo`, `Picture`, `Cover`, `Watch Picture`, or the Notion page cover. |
+| `Year` | Rich text, select, number, or date | Optional | Year you got the watch, e.g. `2024`. Also supports `Acquired Year`, `Purchased Year`, or `Got Year`. |
+
+The page content shown after opening a watch comes from the Notion page body blocks. Use that body to explain how you got it, why it matters, or any collecting notes.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
