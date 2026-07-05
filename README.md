@@ -20,6 +20,20 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Visitor Globe
+
+The home page includes a lightweight marker-based globe for countries that have visited the site in the last 30 days. Exact visitor counts are never sent to the browser; the API only returns country markers and coarse intensity buckets.
+
+Create `.env.local` from `.env.local.example` and fill in the GA4 Data API values:
+
+```env
+GA4_PROPERTY_ID=replace-with-numeric-property-id
+GOOGLE_CLIENT_EMAIL=replace-with-service-account-email
+GOOGLE_PRIVATE_KEY="replace-with-service-account-private-key"
+```
+
+`G-D2MFN50BT9` is the Google Analytics Measurement ID. The server-side Data API also needs the numeric GA4 Property ID and a service account with access to that property.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
