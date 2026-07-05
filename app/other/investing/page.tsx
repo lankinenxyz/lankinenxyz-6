@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
+import SplitPage from "@/components/SplitPage";
 import { getInvestingData, type InvestingData, type Stock } from "@/lib/notion-investing";
 
 export const metadata: Metadata = {
@@ -26,24 +27,26 @@ export default async function Investing() {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col">
         <Header />
 
-        <section className="grid min-h-0 flex-1 gap-8 overflow-y-auto py-8 sm:py-12 lg:grid-cols-[0.62fr_1.38fr] lg:gap-12 lg:py-16">
-          <div className="lg:sticky lg:h-fit">
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Other / Investing</p>
-            <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-              Market analysis and invested companies, synced from Notion.
-            </p>
-          </div>
-
-          <div className="grid min-w-0 gap-10">
-            {errorMessage ? (
-              <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
-                {errorMessage}
+        <SplitPage
+          left={
+            <>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Other / Investing</p>
+              <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
+                Market analysis and invested companies, synced from Notion.
               </p>
-            ) : null}
+            </>
+          }
+          right={
+            <>
+              {errorMessage ? (
+                <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
+                  {errorMessage}
+                </p>
+              ) : null}
 
-            {!errorMessage ? (
-              <>
-                <section aria-labelledby="market-analysis-heading">
+              {!errorMessage ? (
+                <>
+                  <section aria-labelledby="market-analysis-heading">
                   <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
                     <div>
                       <p className="font-mono text-xs uppercase tracking-[0.16em] text-lime-100/58">Writings</p>
@@ -118,11 +121,13 @@ export default async function Investing() {
                       ))}
                     </ol>
                   )}
-                </section>
-              </>
-            ) : null}
-          </div>
-        </section>
+                  </section>
+                </>
+              ) : null}
+            </>
+          }
+          rightClassName="grid gap-10"
+        />
       </div>
     </main>
   );

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import OtherContent from "@/components/OtherContent";
+import SplitPage from "@/components/SplitPage";
 import { getWatch, type Watch } from "@/lib/notion-other";
 
 type WatchDetailProps = {
@@ -36,22 +37,25 @@ export default async function WatchDetail({ params }: WatchDetailProps) {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col">
         <Header />
 
-        <section className="grid min-h-0 flex-1 gap-8 overflow-y-auto py-8 sm:py-12 lg:grid-cols-[0.62fr_1.38fr] lg:gap-12 lg:py-16">
-          <div className="lg:sticky lg:h-fit">
-            <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/other/watches">
-              Other / Watches
-            </Link>
-            <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62">{watch.year || "Year unknown"}</p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">{watch.title}</h1>
-          </div>
-
-          <article className="min-w-0 border border-white/10 bg-white/[0.055] p-4 backdrop-blur sm:p-6">
-            {watch.imageUrl ? (
-              <div aria-label={watch.title} className="mb-6 min-h-80 border border-white/10 bg-black/24 bg-cover bg-center" role="img" style={{ backgroundImage: `url(${watch.imageUrl})` }} />
-            ) : null}
-            <OtherContent blocks={watch.content ?? []} />
-          </article>
-        </section>
+        <SplitPage
+          left={
+            <>
+              <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/other/watches">
+                Other / Watches
+              </Link>
+              <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62">{watch.year || "Year unknown"}</p>
+              <h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">{watch.title}</h1>
+            </>
+          }
+          right={
+            <article className="border border-white/10 bg-white/[0.055] p-4 backdrop-blur sm:p-6">
+              {watch.imageUrl ? (
+                <div aria-label={watch.title} className="mb-6 min-h-80 border border-white/10 bg-black/24 bg-cover bg-center" role="img" style={{ backgroundImage: `url(${watch.imageUrl})` }} />
+              ) : null}
+              <OtherContent blocks={watch.content ?? []} />
+            </article>
+          }
+        />
       </div>
     </main>
   );

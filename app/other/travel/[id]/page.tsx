@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import OtherContent from "@/components/OtherContent";
+import SplitPage from "@/components/SplitPage";
 import { getTravelDestination, type TravelDestination } from "@/lib/notion-other";
 
 type TravelDetailProps = {
@@ -36,23 +37,26 @@ export default async function TravelDetail({ params }: TravelDetailProps) {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col">
         <Header />
 
-        <section className="grid min-h-0 flex-1 gap-8 overflow-y-auto py-8 sm:py-12 lg:grid-cols-[0.62fr_1.38fr] lg:gap-12 lg:py-16">
-          <div className="lg:sticky lg:h-fit">
-            <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/other/travel">
-              Other / Travel
-            </Link>
-            <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62">{formatTravelDate(destination)}</p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">{destination.city}</h1>
-            {destination.country ? <p className="mt-3 text-lg text-white/62">{destination.country}</p> : null}
-          </div>
-
-          <article className="min-w-0 border border-white/10 bg-white/[0.055] p-4 backdrop-blur sm:p-6">
-            {destination.imageUrl ? (
-              <div aria-label={destination.title} className="mb-6 min-h-80 border border-white/10 bg-black/24 bg-cover bg-center" role="img" style={{ backgroundImage: `url(${destination.imageUrl})` }} />
-            ) : null}
-            <OtherContent blocks={destination.content ?? []} />
-          </article>
-        </section>
+        <SplitPage
+          left={
+            <>
+              <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/other/travel">
+                Other / Travel
+              </Link>
+              <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62">{formatTravelDate(destination)}</p>
+              <h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">{destination.city}</h1>
+              {destination.country ? <p className="mt-3 text-lg text-white/62">{destination.country}</p> : null}
+            </>
+          }
+          right={
+            <article className="border border-white/10 bg-white/[0.055] p-4 backdrop-blur sm:p-6">
+              {destination.imageUrl ? (
+                <div aria-label={destination.title} className="mb-6 min-h-80 border border-white/10 bg-black/24 bg-cover bg-center" role="img" style={{ backgroundImage: `url(${destination.imageUrl})` }} />
+              ) : null}
+              <OtherContent blocks={destination.content ?? []} />
+            </article>
+          }
+        />
       </div>
     </main>
   );

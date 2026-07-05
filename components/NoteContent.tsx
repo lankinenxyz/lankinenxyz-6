@@ -19,11 +19,23 @@ function BlockRenderer({ block }: { block: NoteBlock }) {
 
   switch (block.type) {
     case "heading_1":
-      return <h2 className="pt-4 text-3xl font-semibold tracking-[-0.04em] text-white">{renderRichText(block.richText)}</h2>;
+      return (
+        <h2 className="scroll-mt-6 pt-4 text-3xl font-semibold tracking-[-0.04em] text-white" id={getHeadingId(block.id)}>
+          {renderRichText(block.richText)}
+        </h2>
+      );
     case "heading_2":
-      return <h3 className="pt-3 text-2xl font-semibold tracking-[-0.03em] text-white">{renderRichText(block.richText)}</h3>;
+      return (
+        <h3 className="scroll-mt-6 pt-3 text-2xl font-semibold tracking-[-0.03em] text-white" id={getHeadingId(block.id)}>
+          {renderRichText(block.richText)}
+        </h3>
+      );
     case "heading_3":
-      return <h4 className="pt-2 text-xl font-semibold tracking-[-0.02em] text-white">{renderRichText(block.richText)}</h4>;
+      return (
+        <h4 className="scroll-mt-6 pt-2 text-xl font-semibold tracking-[-0.02em] text-white" id={getHeadingId(block.id)}>
+          {renderRichText(block.richText)}
+        </h4>
+      );
     case "bulleted_list_item":
       return (
         <div className="grid grid-cols-[auto_1fr] gap-3">
@@ -99,6 +111,10 @@ function BlockRenderer({ block }: { block: NoteBlock }) {
         </div>
       );
   }
+}
+
+export function getHeadingId(blockId: string) {
+  return `note-heading-${blockId}`;
 }
 
 function NestedBlocks({ blocks }: { blocks: NoteBlock[] }) {

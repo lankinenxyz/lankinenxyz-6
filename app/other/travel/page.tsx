@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/Header";
+import SplitPage from "@/components/SplitPage";
 import { getTravelDestinations, type TravelDestination } from "@/lib/notion-other";
 
 export const metadata: Metadata = {
@@ -27,27 +28,30 @@ export default async function Travel() {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col">
         <Header />
 
-        <section className="grid min-h-0 flex-1 gap-8 overflow-y-auto py-8 sm:py-12 lg:grid-cols-[0.62fr_1.38fr] lg:gap-12 lg:py-16">
-          <div className="lg:sticky lg:h-fit">
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Other / Travel</p>
-            <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-              A visual log of places, synced from Notion. Some older trips are intentionally undated.
-            </p>
-          </div>
+        <SplitPage
+          left={
+            <>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Other / Travel</p>
+              <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
+                A visual log of places, synced from Notion. Some older trips are intentionally undated.
+              </p>
+            </>
+          }
+          right={
+            <>
+              {errorMessage ? <EmptyState>{errorMessage}</EmptyState> : null}
+              {!errorMessage && destinations.length === 0 ? <EmptyState>No travel destinations published yet.</EmptyState> : null}
 
-          <div className="min-w-0">
-            {errorMessage ? <EmptyState>{errorMessage}</EmptyState> : null}
-            {!errorMessage && destinations.length === 0 ? <EmptyState>No travel destinations published yet.</EmptyState> : null}
-
-            <ol className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <ol className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {destinations.map((destination) => (
                 <li key={destination.id}>
                   <TravelCard destination={destination} />
                 </li>
               ))}
-            </ol>
-          </div>
-        </section>
+              </ol>
+            </>
+          }
+        />
       </div>
     </main>
   );

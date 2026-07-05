@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import SplitPage from "@/components/SplitPage";
 
 const education = [
   "M.Sc. in Data Science, University of Helsinki",
@@ -90,34 +91,36 @@ export default function About() {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col">
         <Header />
 
-        <section className="grid min-h-0 flex-1 gap-10 overflow-y-auto py-8 sm:py-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12 lg:overflow-hidden lg:py-16">
-          <div className="lg:h-fit">
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">About</p>
-            <div className="mt-7 grid gap-4 text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
-              <p>
-                I am currently building at Elva. I have over a decade of experience building various kinds of
-                software products, both collaboratively and independently.
-              </p>
-              <p>
-                I am deeply passionate about AI but also enthusiastic about exploring other emerging technologies and
-                the intricacies of how startups operate.
-              </p>
-            </div>
+        <SplitPage
+          left={
+            <>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">About</p>
+              <div className="mt-7 grid gap-4 text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
+                <p>
+                  I am currently building at Elva. I have over a decade of experience building various kinds of
+                  software products, both collaboratively and independently.
+                </p>
+                <p>
+                  I am deeply passionate about AI but also enthusiastic about exploring other emerging technologies and
+                  the intricacies of how startups operate.
+                </p>
+              </div>
 
-            <section className="mt-10 border border-white/10 bg-white/[0.06] p-4 backdrop-blur sm:p-5">
-              <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-white/48">Formal Education</h2>
-              <ul className="mt-4 grid gap-3 text-sm text-white/78 sm:text-base">
-                {education.map((degree) => (
-                  <li key={degree} className="border-l border-lime-100/38 pl-3">
-                    {degree}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </div>
-
-          <div className="scrollbar-none min-w-0 space-y-10 lg:overflow-y-auto lg:pr-2">
-            <section aria-labelledby="experience-heading">
+              <section className="mt-10 border border-white/10 bg-white/[0.06] p-4 backdrop-blur sm:p-5">
+                <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-white/48">Formal Education</h2>
+                <ul className="mt-4 grid gap-3 text-sm text-white/78 sm:text-base">
+                  {education.map((degree) => (
+                    <li key={degree} className="border-l border-lime-100/38 pl-3">
+                      {degree}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </>
+          }
+          right={
+            <>
+              <section aria-labelledby="experience-heading">
               <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
                 <div>
                   <h2
@@ -201,9 +204,11 @@ export default function About() {
                   </li>
                 ))}
               </ol>
-            </section>
-          </div>
-        </section>
+              </section>
+            </>
+          }
+          rightClassName="space-y-10 lg:pr-2"
+        />
       </div>
     </main>
   );

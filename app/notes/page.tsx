@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/Header";
+import SplitPage from "@/components/SplitPage";
 import { getNotes, type NoteSummary } from "@/lib/notion-notes";
 
 export const metadata: Metadata = {
@@ -27,28 +28,30 @@ export default async function Notes() {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col">
         <Header />
 
-        <section className="grid min-h-0 flex-1 gap-8 overflow-y-auto py-8 sm:py-12 lg:grid-cols-[0.62fr_1.38fr] lg:gap-12 lg:py-16">
-          <div className="lg:sticky lg:h-fit">
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Notes</p>
-            <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-              Published field notes, rough edges, and saved thoughts.
-            </p>
-          </div>
-
-          <div className="min-w-0">
-            {errorMessage ? (
-              <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
-                {errorMessage}
+        <SplitPage
+          left={
+            <>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Notes</p>
+              <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
+                Published field notes, rough edges, and saved thoughts.
               </p>
-            ) : null}
+            </>
+          }
+          right={
+            <>
+              {errorMessage ? (
+                <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
+                  {errorMessage}
+                </p>
+              ) : null}
 
-            {!errorMessage && notes.length === 0 ? (
-              <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
-                No published notes yet.
-              </p>
-            ) : null}
+              {!errorMessage && notes.length === 0 ? (
+                <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
+                  No published notes yet.
+                </p>
+              ) : null}
 
-            <ol className="grid gap-5">
+              <ol className="grid gap-5">
               {notes.map((note, index) => (
                 <li key={note.id}>
                   <Link
@@ -83,9 +86,10 @@ export default async function Notes() {
                   </Link>
                 </li>
               ))}
-            </ol>
-          </div>
-        </section>
+              </ol>
+            </>
+          }
+        />
       </div>
     </main>
   );

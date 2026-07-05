@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
+import SplitPage from "@/components/SplitPage";
 import { getProjects, type Project } from "@/lib/notion-projects";
 
 export const metadata: Metadata = {
@@ -26,34 +27,36 @@ export default async function Projects() {
       <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col">
         <Header />
 
-        <section className="grid min-h-0 flex-1 gap-8 overflow-y-auto py-8 sm:py-12 lg:grid-cols-[0.62fr_1.38fr] lg:gap-12 lg:py-16">
-          <div className="lg:sticky lg:h-fit">
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Projects</p>
-            <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-              Products, experiments, and systems pulled from Notion.
-            </p>
-          </div>
-
-          <div className="min-w-0">
-            {errorMessage ? (
-              <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
-                {errorMessage}
+        <SplitPage
+          left={
+            <>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Projects</p>
+              <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
+                Products, experiments, and systems pulled from Notion.
               </p>
-            ) : null}
+            </>
+          }
+          right={
+            <>
+              {errorMessage ? (
+                <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
+                  {errorMessage}
+                </p>
+              ) : null}
 
-            {!errorMessage && projects.length === 0 ? (
-              <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
-                No projects published yet.
-              </p>
-            ) : null}
+              {!errorMessage && projects.length === 0 ? (
+                <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">
+                  No projects published yet.
+                </p>
+              ) : null}
 
-            <ol className="grid gap-5">
-              {projects.map((project, index) => (
-                <li
-                  key={project.id}
-                  className="group border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-6"
-                >
-                  <article className="grid gap-5">
+              <ol className="grid gap-5">
+                {projects.map((project, index) => (
+                  <li
+                    key={project.id}
+                    className="group border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-6"
+                  >
+                    <article className="grid gap-5">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="flex min-w-0 gap-4">
                         <ProjectLogo project={project} />
@@ -89,12 +92,13 @@ export default async function Projects() {
                     ) : null}
 
                     {project.imageUrls.length > 0 ? <ProjectImages imageUrls={project.imageUrls} title={project.title} /> : null}
-                  </article>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
+                    </article>
+                  </li>
+                ))}
+              </ol>
+            </>
+          }
+        />
       </div>
     </main>
   );
