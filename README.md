@@ -68,6 +68,27 @@ The market analysis database should have `Name` and `Description` properties. Op
 
 The stocks database should have `Name`, `Ticker`, `Date`, `Price`, `Currency`, and `Description` properties. `Currency` can be a select, status, or rich text property.
 
+## Travel
+
+The `/other/travel` page reads travel destinations from a Notion database. Share the database with your Notion integration, then add this value to `.env.local`:
+
+```env
+NOTION_TRAVEL_DATABASE_ID=replace-with-travel-database-id
+```
+
+The travel database should have this structure:
+
+| Property | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `Name` | Title | Yes | Destination title. Can be the city name, e.g. `Tokyo`. |
+| `City` | Rich text or title | Yes | Displayed on hover and detail pages. Falls back to `Name` if empty. |
+| `Country` | Rich text or select | Recommended | Displayed below the city. |
+| `Image` | Files, URL, or rich text URL | Recommended | Main grid image. Also supports `Images`, `Photo`, `Picture`, `Cover`, or the Notion page cover. |
+| `Month` | Rich text, select, number, or date | Optional | Use values like `Jan`, `January`, or `01`. Can be empty if unknown. |
+| `Year` | Rich text, select, number, or date | Optional | Use values like `2024`. Can be empty if unknown. |
+
+The page content shown after opening a destination comes from the Notion page body blocks.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
