@@ -55,6 +55,19 @@ NOTION_PROJECTS_DATABASE_ID=replace-with-projects-database-id
 
 The database should have a `Name` title property plus project fields for `Description`, `Logo URL`, `Image URLs`, `Link`, and `Status`. Optional URL fields can be Notion URL properties, rich text with comma/newline-separated URLs, or files properties for images.
 
+## Investing
+
+The `/other/investing` page reads from two Notion databases. Share both databases with your Notion integration, then add these values to `.env.local`:
+
+```env
+NOTION_INVESTING_MARKET_ANALYSIS_DATABASE_ID=replace-with-market-analysis-database-id
+NOTION_INVESTING_STOCKS_DATABASE_ID=replace-with-stocks-database-id
+```
+
+The market analysis database should have `Name` and `Description` properties. Optional `Date` and `Link` properties are also supported.
+
+The stocks database should have `Name`, `Ticker`, `Date`, `Price`, `Currency`, and `Description` properties. `Currency` can be a select, status, or rich text property.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
