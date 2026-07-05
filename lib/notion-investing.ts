@@ -72,36 +72,40 @@ export async function getInvestingData(): Promise<InvestingData> {
 }
 
 async function getMarketAnalysis(token: string, databaseId: string): Promise<MarketAnalysis[]> {
-  const pages = await queryDatabase(token, databaseId, "Date");
+  const pages = await queryDatabase(token, databaseId);
 
-  return pages.map((page) => ({
-    id: page.id,
-    name: getTitle(page.properties),
-    description: getPlainText(page.properties, ["Description", "Summary"]),
-    date: getDate(page.properties),
-    link: getUrl(page.properties, ["Link", "URL", "Url"]),
-  }));
+  return sortByDateAsc(
+    pages.map((page) => ({
+      id: page.id,
+      name: getTitle(page.properties),
+      description: getPlainText(page.properties, ["Description", "Summary"]),
+      date: getDate(page.properties),
+      link: getUrl(page.properties, ["Link", "URL", "Url"]),
+    })),
+  );
 }
 
 async function getStocks(token: string, databaseId: string): Promise<Stock[]> {
-  const pages = await queryDatabase(token, databaseId, "Date");
+  const pages = await queryDatabase(token, databaseId);
 
-  return pages.map((page) => ({
-    id: page.id,
-    name: getTitle(page.properties),
-    ticker: getPlainText(page.properties, ["Ticker", "Symbol"]),
-    date: getDate(page.properties),
-    price: getNumber(page.properties, ["Price", "Cost", "Entry Price"]),
-    currency: getChoice(page.properties, ["Currency", "Ccy"]),
-    description: getPlainText(page.properties, ["Description", "Thesis", "Notes"]),
-  }));
+  return sortByDateAsc(
+    pages.map((page) => ({
+      id: page.id,
+      name: getTitle(page.properties),
+      ticker: getPlainText(page.properties, ["Ticker", "Symbol"]),
+      date: getDate(page.properties),
+      price: getNumber(page.properties, ["Price", "Cost", "Entry Price"]),
+      currency: getChoice(page.properties, ["Currency", "Ccy"]),
+      description: getPlainText(page.properties, ["Description", "Thesis", "Notes"]),
+    })),
+  );
 }
 
 function isConfigured(token: string, databaseId: string) {
   return [token, databaseId].every((value) => !placeholderValues.has(value) && !value.startsWith("replace-with-"));
 }
 
-async function queryDatabase(token: string, databaseId: string, sortProperty: string) {
+async function queryDatabase(token: string, databaseId: string) {
   const pages: NotionPage[] = [];
   let cursor: string | null = null;
 
@@ -111,12 +115,6 @@ async function queryDatabase(token: string, databaseId: string, sortProperty: st
       body: JSON.stringify({
         page_size: 50,
         start_cursor: cursor ?? undefined,
-        sorts: [
-          {
-            property: sortProperty,
-            direction: "descending",
-          },
-        ],
       }),
     });
 
@@ -140,10 +138,24 @@ async function notionFetch<T>(token: string, path: string, init: RequestInit): P
   });
 
   if (!response.ok) {
-    throw new Error(`Notion request failed: ${response.status}`);
+    throw new Error(`Notion request failed: ${response.status} ${await response.text()}`);
   }
 
   return (await response.json()) as T;
+}
+
+function sortByDateAsc<T extends { date: string | null }>(items: T[]) {
+  return [...items].sort((a, b) => toTimestamp(a.date) - toTimestamp(b.date));
+}
+
+function toTimestamp(value: string | null) {
+  if (!value) {
+    return 0;
+  }
+
+  const timestamp = new Date(value).getTime();
+
+  return Number.isNaN(timestamp) ? 0 : timestamp;
 }
 
 function getTitle(properties: Record<string, NotionProperty>) {
