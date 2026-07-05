@@ -22,6 +22,7 @@ const experience: Experience[] = [
     period: "Jan 2026 - Present · 7 mos",
     location: null,
     description: null,
+    logoUrl: "/elva.jpg"
   },
   {
     role: "Software Engineer",
@@ -29,6 +30,7 @@ const experience: Experience[] = [
     period: "Mar 2025 - Jan 2026 · 11 mos",
     location: "Helsinki, Uusimaa, Finland",
     description: "2nd employee",
+    logoUrl: "/nestai.jpg"
   },
   {
     role: "Software Engineer",
@@ -36,6 +38,7 @@ const experience: Experience[] = [
     period: "Jul 2024 - Dec 2024 · 6 mos",
     location: "Gzira, Malta",
     description: "Side quest to learn more about the online gambling industry.",
+    logoUrl: "/funnz.jpg"
   },
   {
     role: "Software Engineer",
@@ -44,6 +47,7 @@ const experience: Experience[] = [
     location: "San Francisco, California, United States",
     description:
       "YC-backed Independent RIA and digital family office providing financial planning, investment management, and tax services to entrepreneurs and tech executives. Raised $37mm from Greenoaks, Lachy Groom, Y Combinator.",
+    logoUrl: "/compound.jpg"
   },
   {
     role: "Consultant",
@@ -52,6 +56,7 @@ const experience: Experience[] = [
     location: "New York, New York, United States",
     description:
       "Khosla Ventures and Sequoia-backed startup transforming the insurance brokerage industry. I contributed early on by setting up the core technologies and developing the first functional web dashboard.",
+    logoUrl: "withcoverage.jpg"
   },
   {
     role: "Software Engineer",
@@ -59,6 +64,7 @@ const experience: Experience[] = [
     period: "Jan 2021 - Aug 2021 · 8 mos",
     location: "Helsinki, Uusimaa, Finland",
     description: "Acquired by Reddit",
+    logoUrl: "neverthink.jpg"
   },
   {
     role: "Teaching Assistant",
@@ -66,6 +72,7 @@ const experience: Experience[] = [
     period: "Jun 2020 - Jul 2020 · 2 mos",
     location: "Helsinki, Uusimaa, Finland",
     description: "Software Production Course",
+    logoUrl: "/uh.jpg"
   },
   {
     role: "Software Engineer",
@@ -73,6 +80,7 @@ const experience: Experience[] = [
     period: "Jan 2020 - Jul 2020 · 7 mos",
     location: null,
     description: "EdTech startup",
+    logoUrl: "/stealth.jpg"
   },
 ];
 
@@ -121,89 +129,89 @@ export default function About() {
           right={
             <>
               <section aria-labelledby="experience-heading">
-              <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
-                <div>
+                <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
+                  <div>
+                    <h2
+                      id="experience-heading"
+                      className="mt-2 text-2xl font-semibold tracking-[-0.03em] sm:text-3xl"
+                    >
+                      Experience
+                    </h2>
+                  </div>
+                </div>
+
+                <ol className="grid gap-3">
+                  {experience.map((item, index) => (
+                    <li
+                      key={`${item.company}-${item.period}`}
+                      className="group border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-5"
+                    >
+                      <div className="flex gap-4">
+                        <div className="grid size-11 shrink-0 place-items-center overflow-hidden border border-white/12 bg-black/24 font-mono text-xs font-semibold uppercase text-lime-100/76 sm:size-12">
+                          {item.logoUrl ? (
+                            <img
+                              src={item.logoUrl}
+                              alt={`${item.company} logo`}
+                              className="size-full object-cover rounded"
+                            />
+                          ) : (
+                            item.company
+                              .split(" ")
+                              .map((word) => word[0])
+                              .join("")
+                              .slice(0, 2)
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                            <div>
+                              <h3 className="text-lg font-semibold tracking-[-0.02em] text-white sm:text-xl leading-none">
+                                {item.role}
+                              </h3>
+                              <p className="mt-1.5 text-sm text-white/70 sm:text-base">{item.company}</p>
+                            </div>
+                            <p className="font-mono text-xs uppercase tracking-[0.08em] text-white/42 sm:max-w-44 sm:text-right">
+                              {String(index + 1).padStart(2, "0")}
+                            </p>
+                          </div>
+
+                          <div className="mt-3 flex flex-col gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.08em] text-white/38">
+                            <span>{item.period}</span>
+                            {item.location ? <span>{item.location}</span> : null}
+                          </div>
+
+                          {item.description ? (
+                            <p className="mt-4 text-sm leading-6 text-white/62">{item.description}</p>
+                          ) : null}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+
+              <section aria-labelledby="volunteering-heading">
+                <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
                   <h2
-                    id="experience-heading"
+                    id="volunteering-heading"
                     className="mt-2 text-2xl font-semibold tracking-[-0.03em] sm:text-3xl"
                   >
-                    Experience
+                    Volunteering
                   </h2>
                 </div>
-              </div>
 
-              <ol className="grid gap-3">
-                {experience.map((item, index) => (
-                  <li
-                    key={`${item.company}-${item.period}`}
-                    className="group border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-5"
-                  >
-                    <div className="flex gap-4">
-                      <div className="grid size-11 shrink-0 place-items-center overflow-hidden border border-white/12 bg-black/24 font-mono text-xs font-semibold uppercase text-lime-100/76 sm:size-12">
-                        {item.logoUrl ? (
-                          <img
-                            src={item.logoUrl}
-                            alt={`${item.company} logo`}
-                            className="size-full object-cover"
-                          />
-                        ) : (
-                          item.company
-                            .split(" ")
-                            .map((word) => word[0])
-                            .join("")
-                            .slice(0, 2)
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-                          <div>
-                            <h3 className="text-lg font-semibold tracking-[-0.02em] text-white sm:text-xl">
-                              {item.role}
-                            </h3>
-                            <p className="mt-1 text-sm text-white/70 sm:text-base">{item.company}</p>
-                          </div>
-                          <p className="font-mono text-xs uppercase tracking-[0.08em] text-white/42 sm:max-w-44 sm:text-right">
-                            {String(index + 1).padStart(2, "0")}
-                          </p>
-                        </div>
-
-                        <div className="mt-3 flex flex-col gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.08em] text-white/38">
-                          <span>{item.period}</span>
-                          {item.location ? <span>{item.location}</span> : null}
-                        </div>
-
-                        {item.description ? (
-                          <p className="mt-4 text-sm leading-6 text-white/62">{item.description}</p>
-                        ) : null}
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </section>
-
-            <section aria-labelledby="volunteering-heading">
-              <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
-                <h2
-                  id="volunteering-heading"
-                  className="mt-2 text-2xl font-semibold tracking-[-0.03em] sm:text-3xl"
-                >
-                  Volunteering
-                </h2>
-              </div>
-
-              <ol className="grid gap-3 sm:grid-cols-3">
-                {volunteering.map((item) => (
-                  <li
-                    key={item.period}
-                    className="border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-5"
-                  >
-                    <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/38">{item.period}</p>
-                    <h3 className="mt-4 text-lg font-semibold tracking-[-0.02em] text-white">{item.role}</h3>
-                    <p className="mt-1 text-sm text-white/70 sm:text-base">{item.organization}</p>
-                  </li>
-                ))}
-              </ol>
+                <ol className="grid gap-3 sm:grid-cols-3">
+                  {volunteering.map((item) => (
+                    <li
+                      key={item.period}
+                      className="border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-5"
+                    >
+                      <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/38">{item.period}</p>
+                      <h3 className="mt-4 text-lg font-semibold tracking-[-0.02em] text-white">{item.role}</h3>
+                      <p className="mt-1 text-sm text-white/70 sm:text-base">{item.organization}</p>
+                    </li>
+                  ))}
+                </ol>
               </section>
             </>
           }
