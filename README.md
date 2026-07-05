@@ -34,6 +34,17 @@ GOOGLE_PRIVATE_KEY="replace-with-service-account-private-key"
 
 `G-D2MFN50BT9` is the Google Analytics Measurement ID. The server-side Data API also needs the numeric GA4 Property ID and a service account with access to that property.
 
+## Notes
+
+The `/notes` page reads notes from a Notion database. Share the database with your Notion integration, then add these values to `.env.local`:
+
+```env
+NOTION_API_KEY=replace-with-notion-integration-token
+NOTION_NOTES_DATABASE_ID=replace-with-notes-database-id
+```
+
+The database should have a `Name` title property and a `Date` date property. The note content is rendered from each Notion page's blocks.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
