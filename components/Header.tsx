@@ -1,21 +1,57 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 const primaryLinks = [
-  { label: "About", href: "/about" },
-  { label: "Notes", href: "/notes" },
-  { label: "Projects", href: "/projects" },
-  { label: "Other", href: "/other" },
+  { label: "About", href: "/about", shortcut: "1" },
+  { label: "Notes", href: "/notes", shortcut: "2" },
+  { label: "Projects", href: "/projects", shortcut: "3" },
+  { label: "Other", href: "/other", shortcut: "4" },
 ];
 
 const contactEmail = "elias@lankinen.xyz";
 
+function getShortcutModifier() {
+  if (typeof navigator === "undefined") {
+    return "ctrl";
+  }
+
+  return navigator.platform.toLowerCase().includes("mac") ? "⌘" : "ctrl";
+}
+
 export default function Header() {
+  const router = useRouter();
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shortcutModifier] = useState(getShortcutModifier);
   const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    const isMac = getShortcutModifier() === "⌘";
+
+    function onKeyDown(event: KeyboardEvent) {
+      const isModifierPressed = isMac ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
+
+      if (!isModifierPressed || event.altKey || event.shiftKey || isContactOpen) {
+        return;
+      }
+
+      const link = primaryLinks.find((item) => item.shortcut === event.key);
+
+      if (!link) {
+        return;
+      }
+
+      event.preventDefault();
+      router.push(link.href);
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isContactOpen, router]);
 
   useEffect(() => {
     if (!isContactOpen) {
@@ -75,10 +111,15 @@ export default function Header() {
             <Link
               href={link.href}
               key={link.label}
-              className="flex h-10 max-w-52 flex-1 items-center justify-between border border-white/10 bg-white/[0.09] px-4 text-white/86 backdrop-blur transition hover:bg-white/[0.16]"
+              className="group flex h-10 max-w-52 flex-1 items-center justify-between border border-white/10 bg-white/[0.09] px-4 text-white/86 backdrop-blur transition hover:bg-white/[0.16]"
             >
               <span>{link.label}</span>
-              <span className="text-white/38">{(index + 1).toString().padStart(2, "0")}</span>
+              <span className="text-white/38">
+                <span className="group-hover:hidden">{(index + 1).toString().padStart(2, "0")}</span>
+                <span className="hidden group-hover:inline" suppressHydrationWarning>
+                  {shortcutModifier}+{link.shortcut}
+                </span>
+              </span>
             </Link>
           ))}
         </div>
