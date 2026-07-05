@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Header from "@/components/Header";
 import SplitPage from "@/components/SplitPage";
 import { getInvestingData, type InvestingData, type Stock } from "@/lib/notion-investing";
@@ -67,7 +68,11 @@ export default async function Investing() {
                     <ol className="grid gap-3">
                       {data.marketAnalysis.map((item, index) => (
                         <li key={item.id}>
-                          <article className="border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-5">
+                          <Link
+                            className="group block border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-5"
+                            href={`/other/investing/market-analysis/${item.id}`}
+                          >
+                            <article>
                             <div className="flex items-start justify-between gap-4">
                               <div>
                                 <p className="font-mono text-xs uppercase tracking-[0.1em] text-white/34">{formatDate(item.date)}</p>
@@ -78,17 +83,11 @@ export default async function Investing() {
                               </p>
                             </div>
                             {item.description ? <p className="mt-4 text-base leading-7 text-white/64">{item.description}</p> : null}
-                            {item.link ? (
-                              <a
-                                className="mt-5 inline-block font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62 transition hover:text-lime-100"
-                                href={item.link}
-                                rel="noreferrer"
-                                target="_blank"
-                              >
+                              <p className="mt-5 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62 transition group-hover:text-lime-100">
                                 Read analysis
-                              </a>
-                            ) : null}
-                          </article>
+                              </p>
+                            </article>
+                          </Link>
                         </li>
                       ))}
                     </ol>

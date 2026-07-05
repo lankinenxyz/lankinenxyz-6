@@ -64,7 +64,7 @@ NOTION_INVESTING_MARKET_ANALYSIS_DATABASE_ID=replace-with-market-analysis-databa
 NOTION_INVESTING_STOCKS_DATABASE_ID=replace-with-stocks-database-id
 ```
 
-The market analysis database should have `Name` and `Description` properties. Optional `Date` and `Link` properties are also supported.
+The market analysis database should have `Name` and `Description` properties. Optional `Date` and `Link` properties are also supported. Clicking a market analysis item opens its own page, with full content rendered from the Notion page body blocks.
 
 The stocks database should have `Name`, `Ticker`, `Date`, `Price`, `Currency`, and `Description` properties. `Currency` can be a select, status, or rich text property.
 
