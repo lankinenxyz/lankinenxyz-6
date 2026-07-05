@@ -19,6 +19,8 @@ const otherLinks = [
 ];
 
 const contactEmail = "elias@lankinen.xyz";
+const githubUrl = "https://github.com/lankinenxyz";
+const linkedinUrl = "https://www.linkedin.com/in/eliaslankinen";
 
 function getShortcutModifier() {
   if (typeof navigator === "undefined") {
@@ -174,6 +176,24 @@ export default function Header() {
         </div>
 
         <div className="flex shrink-0 flex-wrap justify-end gap-1">
+          <a
+            aria-label="Open GitHub profile"
+            className="grid size-10 place-items-center border border-white/10 bg-white/[0.09] text-white/72 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.16] hover:text-white"
+            href={githubUrl}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <GithubIcon />
+          </a>
+          <a
+            aria-label="Open LinkedIn profile"
+            className="grid size-10 place-items-center border border-white/10 bg-white/[0.09] text-white/72 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.16] hover:text-white"
+            href={linkedinUrl}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <LinkedInIcon />
+          </a>
           <button
             type="button"
             onClick={() => {
@@ -275,5 +295,21 @@ export default function Header() {
         </div>
       ) : null}
     </>
+  );
+}
+
+function GithubIcon() {
+  return (
+    <svg aria-hidden="true" className="size-4" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49v-1.9c-2.78.62-3.37-1.22-3.37-1.22-.45-1.19-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1.01.07 1.54 1.06 1.54 1.06.9 1.58 2.36 1.12 2.94.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.31.1-2.72 0 0 .84-.28 2.75 1.05A9.33 9.33 0 0 1 12 6.94c.85 0 1.7.12 2.5.34 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.64 1.03 2.76 0 3.94-2.34 4.81-4.57 5.07.36.32.68.94.68 1.9v2.81c0 .27.18.59.69.49A10.08 10.08 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z" />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg aria-hidden="true" className="size-4" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M5.37 21H2.26V8.98h3.11V21ZM3.82 7.34C2.82 7.34 2 6.5 2 5.48S2.82 3.66 3.82 3.66s1.82.82 1.82 1.82-.81 1.86-1.82 1.86ZM22 21h-3.1v-5.84c0-1.39-.03-3.18-1.93-3.18-1.94 0-2.24 1.52-2.24 3.08V21h-3.1V8.98h2.97v1.64h.04c.41-.78 1.43-1.93 2.94-1.93 3.14 0 3.72 2.07 3.72 4.76V21H22Z" />
+    </svg>
   );
 }
