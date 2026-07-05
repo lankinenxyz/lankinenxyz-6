@@ -29,9 +29,7 @@ export default async function Investing() {
 
         <section className="grid min-h-0 flex-1 gap-8 overflow-y-auto py-8 sm:py-12 lg:grid-cols-[0.62fr_1.38fr] lg:gap-12 lg:py-16">
           <div className="lg:sticky lg:h-fit">
-            <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/other">
-              Other / Investing
-            </Link>
+            <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Other / Investing</p>
             <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
               Market analysis and invested companies, synced from Notion.
             </p>
