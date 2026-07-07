@@ -21,9 +21,9 @@ type AnalyticsResponse = {
 };
 
 const markerSize = {
-  low: 0.035,
-  medium: 0.055,
-  high: 0.075,
+  low: 0.01,
+  medium: 0.02,
+  high: 0.03,
 } satisfies Record<VisitorIntensity, number>;
 
 export default function VisitorGlobe() {
@@ -99,9 +99,9 @@ export default function VisitorGlobe() {
       mapSamples: 12000,
       mapBrightness: 10,
       baseColor: [0.08, 0.1, 0.09],
-      markerColor: [0.72, 1, 0.42],
+      markerColor: [0.55, 0.78, 0.38],
       glowColor: [0.04, 0.05, 0.04],
-      markerElevation: 0.025,
+      markerElevation: 0,
       offset: [0, 0],
       markers,
     });
@@ -151,7 +151,7 @@ export default function VisitorGlobe() {
 
 function subscribeToReducedMotion(callback: () => void) {
   if (typeof window === "undefined") {
-    return () => {};
+    return () => { };
   }
 
   const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
