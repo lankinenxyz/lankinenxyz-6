@@ -53,7 +53,7 @@ The `/projects` page reads projects from a Notion database. Share the database w
 NOTION_PROJECTS_DATABASE_ID=replace-with-projects-database-id
 ```
 
-The database should have a `Name` title property plus project fields for `Description`, `Logo URL`, `Image URLs`, `Link`, and `Status`. Optional URL fields can be Notion URL properties, rich text with comma/newline-separated URLs, or files properties for images.
+The database should have a `Name` title property plus project fields for `Intro`, `Description`, `Year`, `Logo URL`, `Image URLs`, `Link`, and optional `Status`. Optional URL fields can be Notion URL properties, rich text with comma/newline-separated URLs, or files properties for images. Project cards are sorted by newest `Year` first and open their own page only when the Notion page has body content. If `Status` is `Stealth`, the card only shows the name, year, logo, and a `Stealth` tag, and it does not open a detail page.
 
 ## Investing
 

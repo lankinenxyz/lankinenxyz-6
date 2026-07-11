@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Header from "@/components/Header";
 import SplitPage from "@/components/SplitPage";
-import { getProjects, type Project } from "@/lib/notion-projects";
+import { getProjects, isStealthProject, type Project } from "@/lib/notion-projects";
 
 export const metadata: Metadata = {
   title: "Projects | lankinen.xyz",
@@ -32,7 +33,7 @@ export default async function Projects() {
             <>
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Projects</p>
               <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-                I’m still figuring out how to present these. So coming soon…
+                Some bigger projects I have done.
               </p>
             </>
           }
@@ -51,48 +52,9 @@ export default async function Projects() {
               ) : null}
 
               <ol className="grid gap-5">
-                {projects.map((project, index) => (
-                  <li
-                    key={project.id}
-                    className="group border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-6"
-                  >
-                    <article className="grid gap-5">
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                        <div className="flex min-w-0 gap-4">
-                          <ProjectLogo project={project} />
-                          <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                              {project.status ? <ProjectStatus status={project.status} /> : null}
-                              <p className="font-mono text-xs uppercase tracking-[0.08em] text-white/34">
-                                {String(index + 1).padStart(2, "0")}
-                              </p>
-                            </div>
-                            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">
-                              {project.title}
-                            </h2>
-                          </div>
-                        </div>
-
-                        {project.link ? (
-                          <a
-                            className="w-fit border border-white/12 bg-white px-3 py-2 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-black transition hover:bg-lime-100"
-                            href={project.link}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            Open
-                          </a>
-                        ) : null}
-                      </div>
-
-                      {project.description ? (
-                        <p className="max-w-2xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
-                          {project.description}
-                        </p>
-                      ) : null}
-
-                      {project.imageUrls.length > 0 ? <ProjectImages imageUrls={project.imageUrls} title={project.title} /> : null}
-                    </article>
+                {projects.map((project) => (
+                  <li key={project.id}>
+                    <ProjectCard project={project} />
                   </li>
                 ))}
               </ol>
@@ -101,6 +63,44 @@ export default async function Projects() {
         />
       </div>
     </main>
+  );
+}
+
+function ProjectCard({ project }: { project: Project }) {
+  const isStealth = isStealthProject(project);
+  const className =
+    "group block border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-6";
+  const content = (
+    <article className="grid gap-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 gap-4">
+          <ProjectLogo project={project} />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              {project.year ? <ProjectYear year={project.year} /> : null}
+              {isStealth ? <ProjectStealthTag /> : null}
+            </div>
+            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">{project.title}</h2>
+          </div>
+        </div>
+      </div>
+
+      {!isStealth && (project.intro || project.description) ? (
+        <p className="line-clamp-3 max-w-2xl text-base leading-7 text-white/68">{project.intro || project.description}</p>
+      ) : null}
+
+      {!isStealth && project.imageUrls.length > 0 ? <ProjectImages imageUrls={project.imageUrls} title={project.title} /> : null}
+    </article>
+  );
+
+  if (isStealth || !project.hasContent) {
+    return <div className={className}>{content}</div>;
+  }
+
+  return (
+    <Link className={className} href={`/projects/${project.id}`}>
+      {content}
+    </Link>
   );
 }
 
@@ -127,12 +127,26 @@ function ProjectLogo({ project }: { project: Project }) {
   );
 }
 
-function ProjectStatus({ status }: { status: string }) {
+function ProjectYear({ year }: { year: string }) {
   return (
     <span className="border border-lime-100/20 bg-lime-100/10 px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/76">
-      {status}
+      {formatYear(year)}
     </span>
   );
+}
+
+function ProjectStealthTag() {
+  return (
+    <span className="border border-white/12 bg-black/24 px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-white/58">
+      Stealth
+    </span>
+  );
+}
+
+function formatYear(value: string) {
+  const match = value.match(/\d{4}/);
+
+  return match?.[0] ?? value;
 }
 
 function ProjectImages({ imageUrls, title }: { imageUrls: string[]; title: string }) {
