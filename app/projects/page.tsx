@@ -5,7 +5,7 @@ import SplitPage from "@/components/SplitPage";
 import { getProjects, isStealthProject, type Project } from "@/lib/notion-projects";
 
 export const metadata: Metadata = {
-  title: "Projects | lankinen.xyz",
+  title: "Projects",
   description: "Projects by Elias Lankinen.",
 };
 

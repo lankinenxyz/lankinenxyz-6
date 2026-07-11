@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import SplitPage from "@/components/SplitPage";
 
 export const metadata: Metadata = {
-  title: "Chinese | lankinen.xyz",
+  title: "Chinese",
   description: "Chinese learning notes by Elias Lankinen.",
 };
 

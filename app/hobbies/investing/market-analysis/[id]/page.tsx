@@ -10,7 +10,7 @@ type MarketAnalysisDetailProps = {
 };
 
 export const metadata: Metadata = {
-  title: "Market Analysis | lankinen.xyz",
+  title: "Market Analysis",
   description: "Market analysis by Elias Lankinen.",
 };
 

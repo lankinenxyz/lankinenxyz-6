@@ -5,7 +5,7 @@ import SplitPage from "@/components/SplitPage";
 import { getFitnessEntries, type FitnessEntry } from "@/lib/notion-other";
 
 export const metadata: Metadata = {
-  title: "Running | lankinen.xyz",
+  title: "Running",
   description: "Running logs by Elias Lankinen.",
 };
 

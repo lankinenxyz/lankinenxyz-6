@@ -10,7 +10,7 @@ type BookGroup = {
 };
 
 export const metadata: Metadata = {
-  title: "Books | lankinen.xyz",
+  title: "Books",
   description: "Books read by Elias Lankinen.",
 };
 

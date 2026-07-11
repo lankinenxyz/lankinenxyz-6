@@ -11,7 +11,7 @@ type TravelDetailProps = {
 };
 
 export const metadata: Metadata = {
-  title: "Travel | lankinen.xyz",
+  title: "Travel",
   description: "Travel destination details by Elias Lankinen.",
 };
 

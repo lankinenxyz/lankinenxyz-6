@@ -5,7 +5,7 @@ import SplitPage from "@/components/SplitPage";
 import { getNotes, type NoteSummary } from "@/lib/notion-notes";
 
 export const metadata: Metadata = {
-  title: "Notes | lankinen.xyz",
+  title: "Notes",
   description: "Notes by Elias Lankinen.",
 };
 

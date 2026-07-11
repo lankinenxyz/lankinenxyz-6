@@ -10,7 +10,7 @@ type TravelGroup = {
 };
 
 export const metadata: Metadata = {
-  title: "Travel | lankinen.xyz",
+  title: "Travel",
   description: "Travel destinations by Elias Lankinen.",
 };
 

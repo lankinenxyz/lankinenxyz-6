@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import SplitPage from "@/components/SplitPage";
 
 export const metadata: Metadata = {
-  title: "Poker | lankinen.xyz",
+  title: "Poker",
   description: "Poker notes by Elias Lankinen.",
 };
 

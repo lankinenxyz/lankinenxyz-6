@@ -11,7 +11,7 @@ type WatchDetailProps = {
 };
 
 export const metadata: Metadata = {
-  title: "Watches | lankinen.xyz",
+  title: "Watches",
   description: "Watch details by Elias Lankinen.",
 };
 

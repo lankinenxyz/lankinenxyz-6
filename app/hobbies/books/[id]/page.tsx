@@ -11,7 +11,7 @@ type BookDetailProps = {
 };
 
 export const metadata: Metadata = {
-  title: "Books | lankinen.xyz",
+  title: "Books",
   description: "Book notes by Elias Lankinen.",
 };
 

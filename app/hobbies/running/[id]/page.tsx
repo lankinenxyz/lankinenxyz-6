@@ -11,7 +11,7 @@ type FitnessDetailProps = {
 };
 
 export const metadata: Metadata = {
-  title: "Fitness | lankinen.xyz",
+  title: "Running",
   description: "Fitness entry by Elias Lankinen.",
 };
 

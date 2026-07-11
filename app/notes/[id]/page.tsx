@@ -13,7 +13,7 @@ type NoteDetailProps = {
 };
 
 export const metadata: Metadata = {
-  title: "Notes | lankinen.xyz",
+  title: "Notes",
   description: "Note by Elias Lankinen.",
 };
 

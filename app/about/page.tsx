@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import SplitPage from "@/components/SplitPage";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "About Elias Lankinen.",
+};
 
 const education = [
   "M.Sc. in Data Science, University of Helsinki",

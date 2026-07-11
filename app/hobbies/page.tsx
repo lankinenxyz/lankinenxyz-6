@@ -4,7 +4,7 @@ import OtherSections from "@/components/OtherSections";
 import SplitPage from "@/components/SplitPage";
 
 export const metadata: Metadata = {
-  title: "Hobbies | lankinen.xyz",
+  title: "Hobbies",
   description: "Hobbies by Elias Lankinen.",
 };
 

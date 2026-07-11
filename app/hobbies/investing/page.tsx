@@ -5,7 +5,7 @@ import SplitPage from "@/components/SplitPage";
 import { getInvestingData, type InvestingData, type Stock } from "@/lib/notion-investing";
 
 export const metadata: Metadata = {
-  title: "Investing | lankinen.xyz",
+  title: "Investing",
   description: "Investing notes and holdings by Elias Lankinen.",
 };
 
