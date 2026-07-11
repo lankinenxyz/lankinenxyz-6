@@ -61,7 +61,7 @@ function FitnessCard({ entry, index }: { entry: FitnessEntry; index: number }) {
   return (
     <Link
       className="group grid gap-4 border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:grid-cols-[13rem_1fr] sm:p-5"
-      href={`/other/fitness/${entry.id}`}
+      href={`/hobbies/running/${entry.id}`}
     >
       <EntryImage entry={entry} />
       <article className="min-w-0">

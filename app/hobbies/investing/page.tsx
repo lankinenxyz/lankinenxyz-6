@@ -79,7 +79,7 @@ export default async function Investing() {
                           <li key={item.id}>
                             <Link
                               className="group block border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-5"
-                              href={`/other/investing/market-analysis/${item.id}`}
+                              href={`/hobbies/investing/market-analysis/${item.id}`}
                             >
                               <article>
                                 <div className="flex items-start justify-between gap-4">

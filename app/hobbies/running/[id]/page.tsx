@@ -40,8 +40,8 @@ export default async function FitnessDetail({ params }: FitnessDetailProps) {
         <SplitPage
           left={
             <>
-              <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/other/fitness">
-                Other / Fitness
+              <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/hobbies/running">
+                Hobbies / Running
               </Link>
               <div className="mt-6 flex flex-wrap items-center gap-2">
                 {entry.category ? (

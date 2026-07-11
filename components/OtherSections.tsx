@@ -12,34 +12,40 @@ const sections = [
     shortcut: "1",
   },
   {
-    title: "Running",
-    href: "/hobbies/running",
-    description: "Running log",
+    title: "Books",
+    href: "/hobbies/books",
+    description: "Books I have read",
     shortcut: "2",
-  },
-  {
-    title: "Watches",
-    href: "/hobbies/watches",
-    description: "My watch collection",
-    shortcut: "3",
-  },
-  {
-    title: "Travel",
-    href: "/hobbies/travel",
-    description: "Pictures and stories from my travels",
-    shortcut: "4",
   },
   {
     title: "中文",
     href: "/hobbies/chinese",
     description: "",
-    shortcut: "5"
+    shortcut: "3"
+  },
+  {
+    title: "Running",
+    href: "/hobbies/running",
+    description: "Running log",
+    shortcut: "4",
+  },
+  {
+    title: "Travel",
+    href: "/hobbies/travel",
+    description: "Pictures and stories from my travels",
+    shortcut: "5",
+  },
+  {
+    title: "Watches",
+    href: "/hobbies/watches",
+    description: "My watch collection",
+    shortcut: "6",
   },
   {
     title: "Poker",
     href: "/hobbies/poker",
     description: "",
-    shortcut: "6"
+    shortcut: "7"
   },
 ];
 

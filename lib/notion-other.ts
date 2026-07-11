@@ -30,7 +30,9 @@ type NotionProperty =
   | { type: "files"; files: NotionFile[] }
   | { type: "url"; url: string | null }
   | { type: "select"; select: { name?: string } | null }
+  | { type: "multi_select"; multi_select: Array<{ name?: string }> }
   | { type: "status"; status: { name?: string } | null }
+  | { type: "checkbox"; checkbox: boolean }
   | { type: "number"; number: number | null }
   | { type: string; [key: string]: unknown };
 
@@ -88,6 +90,7 @@ export type TravelDestination = {
   title: string;
   city: string;
   country: string;
+  hasContent: boolean;
   imageUrl: string | null;
   month: string | null;
   year: string | null;
@@ -113,6 +116,18 @@ export type FitnessEntry = {
   content?: OtherBlock[];
 };
 
+export type Book = {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  imageUrl: string | null;
+  rating: string;
+  tags: string[];
+  year: string | null;
+  content?: OtherBlock[];
+};
+
 export async function getTravelDestinations(): Promise<TravelDestination[]> {
   const token = process.env.NOTION_API_KEY?.trim() ?? "";
   const databaseId = process.env.NOTION_TRAVEL_DATABASE_ID?.trim() ?? "";
@@ -123,7 +138,14 @@ export async function getTravelDestinations(): Promise<TravelDestination[]> {
 
   const pages = await queryDatabase(token, databaseId);
 
-  return sortTravelByDateDesc(pages.map(toTravelDestination));
+  const destinations = await Promise.all(
+    pages.map(async (page) => ({
+      ...toTravelDestination(page),
+      hasContent: await hasBlockChildren(token, page.id),
+    })),
+  );
+
+  return sortTravelByDateDesc(destinations);
 }
 
 export async function getTravelDestination(id: string): Promise<TravelDestination | null> {
@@ -135,9 +157,12 @@ export async function getTravelDestination(id: string): Promise<TravelDestinatio
 
   const page = await getPage(token, id);
 
+  const content = await getBlockChildren(token, page.id);
+
   return {
     ...toTravelDestination(page),
-    content: await getBlockChildren(token, page.id),
+    hasContent: content.length > 0,
+    content,
   };
 }
 
@@ -165,6 +190,38 @@ export async function getFitnessEntries(): Promise<FitnessEntry[]> {
   const pages = await queryDatabase(token, databaseId);
 
   return sortByDateDesc(pages.filter(isVisibleEntry).map(toFitnessEntry));
+}
+
+export async function getBooks(): Promise<Book[]> {
+  const token = process.env.NOTION_API_KEY?.trim() ?? "";
+  const databaseId = process.env.NOTION_BOOKS_DATABASE_ID?.trim() ?? "";
+
+  if (!isConfigured(token, databaseId)) {
+    return [];
+  }
+
+  const pages = await queryDatabase(token, databaseId);
+
+  return sortBooksByYearDesc(pages.filter(isReadBook).map(toBook));
+}
+
+export async function getBook(id: string): Promise<Book | null> {
+  const token = process.env.NOTION_API_KEY?.trim() ?? "";
+
+  if (!isConfigured(token, process.env.NOTION_BOOKS_DATABASE_ID?.trim() ?? "")) {
+    return null;
+  }
+
+  const page = await getPage(token, id);
+
+  if (!isReadBook(page)) {
+    return null;
+  }
+
+  return {
+    ...toBook(page),
+    content: await getBlockChildren(token, page.id),
+  };
 }
 
 export async function getFitnessEntry(id: string): Promise<FitnessEntry | null> {
@@ -230,6 +287,14 @@ async function getPage(token: string, pageId: string) {
   return notionFetch<NotionPage>(token, `/pages/${pageId}`, { method: "GET" });
 }
 
+async function hasBlockChildren(token: string, blockId: string) {
+  const response = await notionFetch<NotionBlocksResponse>(token, `/blocks/${blockId}/children?page_size=1`, {
+    method: "GET",
+  });
+
+  return Boolean(response.results?.length);
+}
+
 async function getBlockChildren(token: string, blockId: string): Promise<OtherBlock[]> {
   const blocks: NotionBlock[] = [];
   let cursor: string | null = null;
@@ -284,6 +349,7 @@ function toTravelDestination(page: NotionPage): TravelDestination {
     title: getTitle(page.properties),
     city: getPlainText(page.properties, ["City"]) || getTitle(page.properties),
     country: getPlainText(page.properties, ["Country"]),
+    hasContent: false,
     imageUrl: getImageUrl(page),
     month: getPlainText(page.properties, ["Month"]),
     year: getPlainText(page.properties, ["Year"]),
@@ -308,6 +374,19 @@ function toFitnessEntry(page: NotionPage): FitnessEntry {
     date: getDate(page.properties),
     category: getPlainText(page.properties, ["Category", "Type"]),
     imageUrl: getImageUrl(page),
+  };
+}
+
+function toBook(page: NotionPage): Book {
+  return {
+    id: page.id,
+    title: getTitle(page.properties),
+    author: getPlainText(page.properties, ["Author", "Authors"]),
+    description: getPlainText(page.properties, ["Description", "Summary", "Notes"]),
+    imageUrl: getImageUrl(page),
+    rating: getPlainText(page.properties, ["Rating", "Score"]),
+    tags: getTags(page.properties, ["Tags", "Tag", "Genres", "Genre", "Category"]),
+    year: getPlainText(page.properties, ["Year", "Read Year"]),
   };
 }
 
@@ -375,12 +454,30 @@ function getStatus(properties: Record<string, NotionProperty>) {
   return "";
 }
 
+function getTags(properties: Record<string, NotionProperty>, names: string[]) {
+  const property = getNamedProperty(properties, names);
+
+  if (isMultiSelectProperty(property)) {
+    return property.multi_select.map((item) => item.name ?? "").filter(Boolean);
+  }
+
+  const plainText = getPlainText(properties, names);
+
+  return plainText ? plainText.split(/[,\n]+/).map((item) => item.trim()).filter(Boolean) : [];
+}
+
 function isVisibleEntry(page: NotionPage) {
   if (!getNamedProperty(page.properties, ["Status", "State"])) {
     return true;
   }
 
   return getStatus(page.properties).toLowerCase() === "published";
+}
+
+function isReadBook(page: NotionPage) {
+  const property = getNamedProperty(page.properties, ["Read"]);
+
+  return isCheckboxProperty(property) && property.checkbox;
 }
 
 function getImageUrl(page: NotionPage) {
@@ -451,8 +548,16 @@ function isSelectProperty(property: NotionProperty | undefined): property is { t
   return property?.type === "select";
 }
 
+function isMultiSelectProperty(property: NotionProperty | undefined): property is { type: "multi_select"; multi_select: Array<{ name?: string }> } {
+  return property?.type === "multi_select" && Array.isArray(property.multi_select);
+}
+
 function isStatusProperty(property: NotionProperty | undefined): property is { type: "status"; status: { name?: string } | null } {
   return property?.type === "status";
+}
+
+function isCheckboxProperty(property: NotionProperty | undefined): property is { type: "checkbox"; checkbox: boolean } {
+  return property?.type === "checkbox";
 }
 
 function isNumberProperty(property: NotionProperty | undefined): property is { type: "number"; number: number | null } {
@@ -464,6 +569,10 @@ function sortByDateDesc<T extends { date: string | null }>(items: T[]) {
 }
 
 function sortWatchesByYearDesc(items: Watch[]) {
+  return [...items].sort((a, b) => toYearNumber(b.year) - toYearNumber(a.year));
+}
+
+function sortBooksByYearDesc(items: Book[]) {
   return [...items].sort((a, b) => toYearNumber(b.year) - toYearNumber(a.year));
 }
 

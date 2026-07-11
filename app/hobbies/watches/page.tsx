@@ -58,14 +58,24 @@ export default async function Watches() {
 }
 
 function WatchCard({ watch }: { watch: Watch }) {
+  const hasImage = Boolean(watch.imageUrl);
+
   return (
     <Link
       className="group relative block min-h-72 overflow-hidden border border-white/10 bg-white/[0.055] backdrop-blur transition hover:border-white/24"
       href={`/hobbies/watches/${watch.id}`}
     >
       <GridImage imageUrl={watch.imageUrl} label={watch.title} />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/86 via-black/18 to-black/18 opacity-0 transition duration-300 group-hover:opacity-100" />
-      <div className="absolute inset-x-0 bottom-0 translate-y-3 p-4 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+      <div
+        className={`absolute inset-0 bg-gradient-to-t from-black/86 via-black/18 to-black/18 transition duration-300 ${
+          hasImage ? "opacity-0 group-hover:opacity-100" : "opacity-100"
+        }`}
+      />
+      <div
+        className={`absolute inset-x-0 bottom-0 p-4 transition duration-300 ${
+          hasImage ? "translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100" : "translate-y-0 opacity-100"
+        }`}
+      >
         <p className="font-mono text-xs uppercase tracking-[0.12em] text-lime-100/68">{watch.year || "Year unknown"}</p>
         <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">{watch.title}</h2>
         {watch.ref ? <p className="mt-1 text-sm leading-5 text-white/62">Ref. {watch.ref}</p> : null}

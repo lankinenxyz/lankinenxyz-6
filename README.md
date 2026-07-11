@@ -128,6 +128,29 @@ A practical fitness database structure is:
 
 The full entry content is rendered from each Notion page body blocks, matching Notes, Travel, and Watches.
 
+## Books
+
+The `/hobbies/books` page reads books from a Notion database. Share the database with your Notion integration, then add this value to `.env.local`:
+
+```env
+NOTION_BOOKS_DATABASE_ID=replace-with-books-database-id
+```
+
+The books database should have this structure:
+
+| Property | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `Name` | Title | Yes | Book title. |
+| `Read` | Checkbox | Yes | Only books where `Read` is checked are shown. |
+| `Author` | Rich text, title, or select | Recommended | Displayed below the title on hover. Also supports `Authors`. |
+| `Rating` | Rich text, select, or number | Optional | Displayed as a small chip on hover. Also supports `Score`. |
+| `Tags` | Multi-select, select, or rich text | Optional | Displayed as small chips on hover. Also supports `Tag`, `Genres`, `Genre`, or `Category`. |
+| `Description` | Rich text | Optional | Short hover description. Also supports `Summary` or `Notes`. |
+| `Image` | Files, URL, rich text URL, or page cover | Recommended | Book cover image for the grid. Also supports `Images`, `Photo`, `Picture`, or `Cover`. |
+| `Year` | Rich text, select, number, or date | Optional | The year you read the book. This page uses `Year`, not `Date`, for grouping and sorting. |
+
+Read books are grouped by read year, sorted newest first, and books without a year are shown under `Year unknown` at the bottom.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

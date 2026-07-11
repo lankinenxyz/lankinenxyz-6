@@ -91,6 +91,7 @@ const experience: Experience[] = [
 ];
 
 const volunteering = [
+  { role: "Judge & Mentor", organization: "Stuhi hackathon", period: "Jan 2026" },
   { role: "Volunteer", organization: "Slush", period: "Dec 2019" },
   { role: "Volunteer", organization: "Slush", period: "Dec 2018" },
   { role: "Volunteer", organization: "Slush", period: "Dec 2017" },

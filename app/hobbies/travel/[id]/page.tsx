@@ -40,8 +40,8 @@ export default async function TravelDetail({ params }: TravelDetailProps) {
         <SplitPage
           left={
             <>
-              <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/other/travel">
-                Other / Travel
+              <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/hobbies/travel">
+                Hobbies / Travel
               </Link>
               <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62">{formatTravelDate(destination)}</p>
               <h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">{destination.city}</h1>
