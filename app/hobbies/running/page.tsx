@@ -5,8 +5,8 @@ import SplitPage from "@/components/SplitPage";
 import { getFitnessEntries, type FitnessEntry } from "@/lib/notion-other";
 
 export const metadata: Metadata = {
-  title: "Fitness | lankinen.xyz",
-  description: "Fitness notes and logs by Elias Lankinen.",
+  title: "Running | lankinen.xyz",
+  description: "Running logs by Elias Lankinen.",
 };
 
 export default async function Fitness() {
@@ -31,16 +31,16 @@ export default async function Fitness() {
         <SplitPage
           left={
             <>
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Other / Fitness</p>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Hobbies / Running</p>
               <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-                Training notes, routines, recovery logs, and fitness experiments synced from Notion.
+                I don’t enjoy running, but I do it to stay healthy. I sometimes go through periods when I run much less, so the point of tracking this is to keep myself accountable and encourage myself to run more consistently.
               </p>
             </>
           }
           right={
             <>
               {errorMessage ? <EmptyState>{errorMessage}</EmptyState> : null}
-              {!errorMessage && entries.length === 0 ? <EmptyState>No fitness entries published yet.</EmptyState> : null}
+              {!errorMessage && entries.length === 0 ? <EmptyState>No running entries published yet.</EmptyState> : null}
 
               <ol className="grid gap-4">
                 {entries.map((entry, index) => (

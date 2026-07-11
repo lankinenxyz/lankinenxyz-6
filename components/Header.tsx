@@ -8,14 +8,14 @@ const primaryLinks = [
   { label: "About", href: "/about", shortcut: "1" },
   { label: "Notes", href: "/notes", shortcut: "2" },
   { label: "Projects", href: "/projects", shortcut: "3" },
-  { label: "Other", href: "/other", shortcut: "4" },
+  { label: "Hobbies", href: "/hobbies", shortcut: "4" },
 ];
 
 const otherLinks = [
-  { href: "/other/investing", shortcut: "1" },
-  { href: "/other/fitness", shortcut: "2" },
-  { href: "/other/watches", shortcut: "3" },
-  { href: "/other/travel", shortcut: "4" },
+  { href: "/hobbies/investing", shortcut: "1" },
+  { href: "/hobbies/fitness", shortcut: "2" },
+  { href: "/hobbies/watches", shortcut: "3" },
+  { href: "/hobbies/travel", shortcut: "4" },
 ];
 
 const contactEmail = "elias@lankinen.xyz";

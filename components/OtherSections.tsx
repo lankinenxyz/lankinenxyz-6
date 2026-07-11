@@ -7,27 +7,39 @@ import { useEffect, useState } from "react";
 const sections = [
   {
     title: "Investing",
-    href: "/other/investing",
-    description: "Markets, allocation, risk, and long-term compounding notes.",
+    href: "/hobbies/investing",
+    description: "Stock picks and market analysis",
     shortcut: "1",
   },
   {
-    title: "Fitness",
-    href: "/other/fitness",
-    description: "Training logs, routines, recovery, and experiments.",
+    title: "Running",
+    href: "/hobbies/running",
+    description: "Running log",
     shortcut: "2",
   },
   {
     title: "Watches",
-    href: "/other/watches",
-    description: "References, collecting notes, design, and mechanics.",
+    href: "/hobbies/watches",
+    description: "My watch collection",
     shortcut: "3",
   },
   {
     title: "Travel",
-    href: "/other/travel",
-    description: "Places, routes, stays, and practical observations.",
+    href: "/hobbies/travel",
+    description: "Pictures and stories from my travels",
     shortcut: "4",
+  },
+  {
+    title: "中文",
+    href: "/hobbies/chinese",
+    description: "",
+    shortcut: "5"
+  },
+  {
+    title: "Poker",
+    href: "/hobbies/poker",
+    description: "",
+    shortcut: "6"
   },
 ];
 

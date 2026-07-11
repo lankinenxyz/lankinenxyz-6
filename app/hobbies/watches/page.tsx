@@ -2,22 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/Header";
 import SplitPage from "@/components/SplitPage";
-import { getTravelDestinations, type TravelDestination } from "@/lib/notion-other";
+import { getWatches, type Watch } from "@/lib/notion-other";
 
 export const metadata: Metadata = {
-  title: "Travel | lankinen.xyz",
-  description: "Travel destinations by Elias Lankinen.",
+  title: "Watches | lankinen.xyz",
+  description: "Watches by Elias Lankinen.",
 };
 
-export default async function Travel() {
-  let destinations: TravelDestination[] = [];
+export default async function Watches() {
+  let watches: Watch[] = [];
   let errorMessage = "";
 
   try {
-    destinations = await getTravelDestinations();
+    watches = await getWatches();
   } catch (error) {
-    console.error("Failed to load Notion travel data", error);
-    errorMessage = "Travel destinations are temporarily unavailable.";
+    console.error("Failed to load Notion watches data", error);
+    errorMessage = "Watches are temporarily unavailable.";
   }
 
   return (
@@ -31,23 +31,23 @@ export default async function Travel() {
         <SplitPage
           left={
             <>
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Other / Travel</p>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Hobbies / Watches</p>
               <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-                A visual log of places, synced from Notion. Some older trips are intentionally undated.
+                For me, the fascination is a mix of art, engineering, and story. Watches can be beautiful in the same way paintings are beautiful. The engineering behind them is fascinating, especially now that almost every device has a chip inside it. There is something special about a purely mechanical watch. They also carry memories. Every watch has a story, and I usually get mine in connection with an important life event.
               </p>
             </>
           }
           right={
             <>
               {errorMessage ? <EmptyState>{errorMessage}</EmptyState> : null}
-              {!errorMessage && destinations.length === 0 ? <EmptyState>No travel destinations published yet.</EmptyState> : null}
+              {!errorMessage && watches.length === 0 ? <EmptyState>No watches published yet.</EmptyState> : null}
 
               <ol className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {destinations.map((destination) => (
-                <li key={destination.id}>
-                  <TravelCard destination={destination} />
-                </li>
-              ))}
+                {watches.map((watch) => (
+                  <li key={watch.id}>
+                    <WatchCard watch={watch} />
+                  </li>
+                ))}
               </ol>
             </>
           }
@@ -57,18 +57,18 @@ export default async function Travel() {
   );
 }
 
-function TravelCard({ destination }: { destination: TravelDestination }) {
+function WatchCard({ watch }: { watch: Watch }) {
   return (
     <Link
       className="group relative block min-h-72 overflow-hidden border border-white/10 bg-white/[0.055] backdrop-blur transition hover:border-white/24"
-      href={`/other/travel/${destination.id}`}
+      href={`/hobbies/watches/${watch.id}`}
     >
-      <GridImage imageUrl={destination.imageUrl} label={destination.title} />
+      <GridImage imageUrl={watch.imageUrl} label={watch.title} />
       <div className="absolute inset-0 bg-gradient-to-t from-black/86 via-black/18 to-black/18 opacity-0 transition duration-300 group-hover:opacity-100" />
       <div className="absolute inset-x-0 bottom-0 translate-y-3 p-4 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-        <p className="font-mono text-xs uppercase tracking-[0.12em] text-lime-100/68">{formatTravelDate(destination)}</p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">{destination.city}</h2>
-        {destination.country ? <p className="mt-1 text-sm text-white/66">{destination.country}</p> : null}
+        <p className="font-mono text-xs uppercase tracking-[0.12em] text-lime-100/68">{watch.year || "Year unknown"}</p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">{watch.title}</h2>
+        {watch.ref ? <p className="mt-1 text-sm leading-5 text-white/62">Ref. {watch.ref}</p> : null}
       </div>
     </Link>
   );
@@ -84,8 +84,4 @@ function GridImage({ imageUrl, label }: { imageUrl: string | null; label: string
 
 function EmptyState({ children }: { children: string }) {
   return <p className="border border-white/10 bg-white/[0.055] p-5 text-sm text-white/62 backdrop-blur">{children}</p>;
-}
-
-function formatTravelDate(destination: TravelDestination) {
-  return [destination.month, destination.year].filter(Boolean).join(" ") || "Date unknown";
 }

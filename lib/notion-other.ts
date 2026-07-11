@@ -97,6 +97,7 @@ export type TravelDestination = {
 export type Watch = {
   id: string;
   title: string;
+  ref: string;
   imageUrl: string | null;
   year: string | null;
   content?: OtherBlock[];
@@ -120,9 +121,9 @@ export async function getTravelDestinations(): Promise<TravelDestination[]> {
     return [];
   }
 
-  const pages = await queryDatabase(token, databaseId, "Year");
+  const pages = await queryDatabase(token, databaseId);
 
-  return pages.map(toTravelDestination);
+  return sortTravelByDateDesc(pages.map(toTravelDestination));
 }
 
 export async function getTravelDestination(id: string): Promise<TravelDestination | null> {
@@ -148,9 +149,9 @@ export async function getWatches(): Promise<Watch[]> {
     return [];
   }
 
-  const pages = await queryDatabase(token, databaseId, "Year");
+  const pages = await queryDatabase(token, databaseId);
 
-  return pages.map(toWatch);
+  return sortWatchesByYearDesc(pages.map(toWatch));
 }
 
 export async function getFitnessEntries(): Promise<FitnessEntry[]> {
@@ -293,6 +294,7 @@ function toWatch(page: NotionPage): Watch {
   return {
     id: page.id,
     title: getTitle(page.properties),
+    ref: getPlainText(page.properties, ["Ref", "Reference", "Reference Number"]),
     imageUrl: getImageUrl(page),
     year: getPlainText(page.properties, ["Year", "Acquired Year", "Purchased Year", "Got Year"]),
   };
@@ -459,6 +461,51 @@ function isNumberProperty(property: NotionProperty | undefined): property is { t
 
 function sortByDateDesc<T extends { date: string | null }>(items: T[]) {
   return [...items].sort((a, b) => toTimestamp(b.date) - toTimestamp(a.date));
+}
+
+function sortWatchesByYearDesc(items: Watch[]) {
+  return [...items].sort((a, b) => toYearNumber(b.year) - toYearNumber(a.year));
+}
+
+function sortTravelByDateDesc(items: TravelDestination[]) {
+  return [...items].sort((a, b) => toTravelSortValue(b) - toTravelSortValue(a));
+}
+
+function toTravelSortValue(destination: TravelDestination) {
+  const year = toYearNumber(destination.year);
+
+  if (!year) {
+    return 0;
+  }
+
+  return year * 12 + toMonthNumber(destination.month);
+}
+
+function toMonthNumber(value: string | null) {
+  if (!value) {
+    return 0;
+  }
+
+  const normalized = value.trim().toLowerCase();
+  const numericMonth = Number(normalized);
+
+  if (Number.isInteger(numericMonth) && numericMonth >= 1 && numericMonth <= 12) {
+    return numericMonth;
+  }
+
+  return ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"].findIndex((month) =>
+    normalized.startsWith(month),
+  ) + 1;
+}
+
+function toYearNumber(value: string | null) {
+  if (!value) {
+    return 0;
+  }
+
+  const match = value.match(/\d{4}/);
+
+  return match ? Number(match[0]) : 0;
 }
 
 function toTimestamp(value: string | null) {

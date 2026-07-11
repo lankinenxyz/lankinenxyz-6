@@ -111,12 +111,10 @@ export default function About() {
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">About</p>
               <div className="mt-7 grid gap-4 text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
                 <p>
-                  I am currently building at Elva. I have over a decade of experience building various kinds of
-                  software products, both collaboratively and independently.
+                  I’m a product-oriented generalist software engineer. I’m currently the founding engineer at Elva, where I work across the full product, from AI automation to the smallest visual details.
                 </p>
                 <p>
-                  I am deeply passionate about AI but also enthusiastic about exploring other emerging technologies and
-                  the intricacies of how startups operate.
+                  I’ve worked at top Silicon Valley startups backed by Sequoia, Khosla, and YC, alongside unicorn founders.
                 </p>
               </div>
 

@@ -32,7 +32,7 @@ export default async function Projects() {
             <>
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Projects</p>
               <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-                Products, experiments, and systems pulled from Notion.
+                I’m still figuring out how to present these. So coming soon…
               </p>
             </>
           }
@@ -57,41 +57,41 @@ export default async function Projects() {
                     className="group border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-6"
                   >
                     <article className="grid gap-5">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="flex min-w-0 gap-4">
-                        <ProjectLogo project={project} />
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            {project.status ? <ProjectStatus status={project.status} /> : null}
-                            <p className="font-mono text-xs uppercase tracking-[0.08em] text-white/34">
-                              {String(index + 1).padStart(2, "0")}
-                            </p>
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="flex min-w-0 gap-4">
+                          <ProjectLogo project={project} />
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              {project.status ? <ProjectStatus status={project.status} /> : null}
+                              <p className="font-mono text-xs uppercase tracking-[0.08em] text-white/34">
+                                {String(index + 1).padStart(2, "0")}
+                              </p>
+                            </div>
+                            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">
+                              {project.title}
+                            </h2>
                           </div>
-                          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">
-                            {project.title}
-                          </h2>
                         </div>
+
+                        {project.link ? (
+                          <a
+                            className="w-fit border border-white/12 bg-white px-3 py-2 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-black transition hover:bg-lime-100"
+                            href={project.link}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Open
+                          </a>
+                        ) : null}
                       </div>
 
-                      {project.link ? (
-                        <a
-                          className="w-fit border border-white/12 bg-white px-3 py-2 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-black transition hover:bg-lime-100"
-                          href={project.link}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          Open
-                        </a>
+                      {project.description ? (
+                        <p className="max-w-2xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
+                          {project.description}
+                        </p>
                       ) : null}
-                    </div>
 
-                    {project.description ? (
-                      <p className="max-w-2xl text-base leading-7 text-white/68 sm:text-lg sm:leading-8">
-                        {project.description}
-                      </p>
-                    ) : null}
-
-                    {project.imageUrls.length > 0 ? <ProjectImages imageUrls={project.imageUrls} title={project.title} /> : null}
+                      {project.imageUrls.length > 0 ? <ProjectImages imageUrls={project.imageUrls} title={project.title} /> : null}
                     </article>
                   </li>
                 ))}

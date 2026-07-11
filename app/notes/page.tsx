@@ -33,7 +33,7 @@ export default async function Notes() {
             <>
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Notes</p>
               <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-                Published field notes, rough edges, and saved thoughts.
+                My raw thoughts and observations mainly about startups and tech.
               </p>
             </>
           }
@@ -52,40 +52,40 @@ export default async function Notes() {
               ) : null}
 
               <ol className="grid gap-5">
-              {notes.map((note, index) => (
-                <li key={note.id}>
-                  <Link
-                    className="group block border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-6"
-                    href={`/notes/${note.id}`}
-                  >
-                    <article>
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                          <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/38">
-                            {formatDate(note.date)}
+                {notes.map((note, index) => (
+                  <li key={note.id}>
+                    <Link
+                      className="group block border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-6"
+                      href={`/notes/${note.id}`}
+                    >
+                      <article>
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                          <div>
+                            <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/38">
+                              {formatDate(note.date)}
+                            </p>
+                            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">
+                              {note.name}
+                            </h2>
+                          </div>
+                          <p className="font-mono text-xs uppercase tracking-[0.08em] text-white/34">
+                            {String(index + 1).padStart(2, "0")}
                           </p>
-                          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">
-                            {note.name}
-                          </h2>
                         </div>
-                        <p className="font-mono text-xs uppercase tracking-[0.08em] text-white/34">
-                          {String(index + 1).padStart(2, "0")}
-                        </p>
-                      </div>
 
-                      {note.description ? (
-                        <p className="mt-5 line-clamp-3 max-w-2xl text-base leading-7 text-white/64">
-                          {note.description}
-                        </p>
-                      ) : null}
+                        {note.description ? (
+                          <p className="mt-5 line-clamp-3 max-w-2xl text-base leading-7 text-white/64">
+                            {note.description}
+                          </p>
+                        ) : null}
 
-                      <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/58 transition group-hover:text-lime-100">
-                        Read post
-                      </p>
-                    </article>
-                  </Link>
-                </li>
-              ))}
+                        <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/58 transition group-hover:text-lime-100">
+                          Read post
+                        </p>
+                      </article>
+                    </Link>
+                  </li>
+                ))}
               </ol>
             </>
           }

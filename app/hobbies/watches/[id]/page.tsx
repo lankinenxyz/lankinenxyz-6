@@ -40,11 +40,12 @@ export default async function WatchDetail({ params }: WatchDetailProps) {
         <SplitPage
           left={
             <>
-              <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/other/watches">
-                Other / Watches
+              <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/hobbies/watches">
+                Hobbies / Watches
               </Link>
               <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62">{watch.year || "Year unknown"}</p>
               <h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">{watch.title}</h1>
+              {watch.ref ? <p className="mt-3 text-sm text-white/52">Ref. {watch.ref}</p> : null}
             </>
           }
           right={

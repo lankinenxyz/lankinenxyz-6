@@ -4,8 +4,8 @@ import OtherSections from "@/components/OtherSections";
 import SplitPage from "@/components/SplitPage";
 
 export const metadata: Metadata = {
-  title: "Other | lankinen.xyz",
-  description: "Other interests by Elias Lankinen.",
+  title: "Hobbies | lankinen.xyz",
+  description: "Hobbies by Elias Lankinen.",
 };
 
 export default function Other() {
@@ -20,9 +20,9 @@ export default function Other() {
         <SplitPage
           left={
             <>
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Other</p>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/68">Hobbies</p>
               <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
-                Side interests and personal systems. The sections are ready to grow into their own pages.
+                Here are some topics I’m interested in outside of my professional work.
               </p>
             </>
           }
