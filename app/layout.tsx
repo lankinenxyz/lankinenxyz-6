@@ -13,8 +13,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "lankinen.xyz",
-  description: "Personal website with recent visitor countries.",
+  metadataBase: new URL("https://lankinen.xyz"),
+  title: {
+    default: "lankinen.xyz",
+    template: "%s | lankinen.xyz",
+  },
+  description: "Personal website of Elias Lankinen. Projects, notes, books, and other hobbies.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "lankinen.xyz",
+    description: "Projects, notes, books, and other hobbies by Elias Lankinen.",
+    url: "/",
+    siteName: "lankinen.xyz",
+    images: [
+      {
+        url: "/preview.png",
+        width: 1600,
+        height: 900,
+        alt: "lankinen.xyz website preview with globe visitor analytics",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "lankinen.xyz",
+    description: "Projects, notes, books, and other hobbies by Elias Lankinen.",
+    images: ["/preview.png"],
+  },
 };
 
 export default function RootLayout({
