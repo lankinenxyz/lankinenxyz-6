@@ -81,7 +81,7 @@ export default async function Books() {
 
 function BookCard({ book }: { book: Book }) {
   const hasImage = Boolean(book.imageUrl);
-  const className = "group relative block min-h-96 overflow-hidden border border-white/10 bg-white/[0.055] backdrop-blur transition hover:border-white/24";
+  const className = "group relative block aspect-[2/3] overflow-hidden border border-white/10 bg-white/[0.055] backdrop-blur transition hover:border-white/24";
   const content = (
     <>
       <BookImage imageUrl={book.imageUrl} label={book.title} />
@@ -127,10 +127,10 @@ function BookCard({ book }: { book: Book }) {
 
 function BookImage({ imageUrl, label }: { imageUrl: string | null; label: string }) {
   if (!imageUrl) {
-    return <div className="grid min-h-96 place-items-center bg-black/24 font-mono text-xs uppercase tracking-[0.12em] text-white/34">No image</div>;
+    return <div className="grid size-full place-items-center bg-black/24 font-mono text-xs uppercase tracking-[0.12em] text-white/34">No image</div>;
   }
 
-  return <div aria-label={label} className="min-h-96 bg-cover bg-center transition duration-500 group-hover:scale-105" role="img" style={{ backgroundImage: `url(${imageUrl})` }} />;
+  return <div aria-label={label} className="size-full bg-cover bg-center transition duration-500 group-hover:scale-105" role="img" style={{ backgroundImage: `url(${imageUrl})` }} />;
 }
 
 function EmptyState({ children }: { children: string }) {
