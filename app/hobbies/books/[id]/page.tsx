@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import OtherContent from "@/components/OtherContent";
 import SplitPage from "@/components/SplitPage";
-import { getBook, type Book } from "@/lib/notion-other";
+import { getBook, getNotionImageSrc, type Book } from "@/lib/notion-other";
 
 type BookDetailProps = {
   params: Promise<{ id: string }>;
@@ -28,6 +29,8 @@ export default async function BookDetail({ params }: BookDetailProps) {
   if (!book) {
     notFound();
   }
+
+  const imageSrc = getNotionImageSrc("books", book.id, book.imageUrl);
 
   return (
     <main className="relative h-dvh overflow-hidden bg-[#050706] px-3 py-3 text-white sm:px-4 sm:py-4">
@@ -62,8 +65,10 @@ export default async function BookDetail({ params }: BookDetailProps) {
           }
           right={
             <article className="border border-white/10 bg-white/[0.055] p-4 backdrop-blur sm:p-6">
-              {book.imageUrl ? (
-                <div aria-label={book.title} className="mb-6 min-h-96 border border-white/10 bg-black/24 bg-contain bg-center bg-no-repeat" role="img" style={{ backgroundImage: `url(${book.imageUrl})` }} />
+              {imageSrc ? (
+                <div className="relative mb-6 min-h-96 border border-white/10 bg-black/24">
+                  <Image alt={book.title} className="object-contain" fill priority sizes="(max-width: 1024px) 100vw, 760px" src={imageSrc} />
+                </div>
               ) : null}
               {book.description ? <p className="mb-6 text-base leading-7 text-white/70 sm:text-lg sm:leading-8">{book.description}</p> : null}
               <OtherContent blocks={book.content ?? []} />

@@ -166,6 +166,58 @@ export async function getTravelDestination(id: string): Promise<TravelDestinatio
   };
 }
 
+export type NotionImageCollection = "books" | "watches";
+
+/**
+ * Notion serves images from signed S3 URLs that expire after about an hour and carry no
+ * `Cache-Control`. Pointing the browser straight at them means every visit re-downloads the
+ * full-resolution original. Instead we render `/api/notion-image`, which re-resolves the signed
+ * URL server-side on demand, so the URL we hand to `next/image` stays stable and cacheable.
+ *
+ * The `v` param is the Notion file id, so replacing a photo produces a new URL and busts the cache.
+ */
+export function getNotionImageSrc(collection: NotionImageCollection, pageId: string, imageUrl: string | null) {
+  if (!imageUrl) {
+    return null;
+  }
+
+  const searchParams = new URLSearchParams({ c: collection, id: pageId, v: getImageVersion(imageUrl) });
+
+  return `/api/notion-image?${searchParams.toString()}`;
+}
+
+/**
+ * Resolves via the cached database query rather than a per-page fetch: a grid can ask for a hundred
+ * images at once, and one Notion round-trip per image is slow enough to trip the image optimizer's
+ * 7s upstream timeout. The whole collection is one cached query, so only the first request pays for it.
+ */
+export async function getCollectionImageUrl(collection: NotionImageCollection, pageId: string): Promise<string | null> {
+  const token = process.env.NOTION_API_KEY?.trim() ?? "";
+
+  if (placeholderValues.has(token) || token.startsWith("replace-with-")) {
+    return null;
+  }
+
+  const entries = collection === "books" ? await getBooks() : await getWatches();
+  const entry = entries.find((candidate) => candidate.id === pageId);
+
+  if (entry) {
+    return entry.imageUrl;
+  }
+
+  // Not in the collection (filtered out, or a detail page opened directly), so fall back to the page.
+  try {
+    return getImageUrl(await getPage(token, pageId));
+  } catch (error) {
+    // An unknown page id is a missing image, not an upstream failure.
+    if (error instanceof NotionRequestError && error.status === 404) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
 export async function getWatches(): Promise<Watch[]> {
   const token = process.env.NOTION_API_KEY?.trim() ?? "";
   const databaseId = process.env.NOTION_WATCHES_DATABASE_ID?.trim() ?? "";
@@ -337,10 +389,16 @@ async function notionFetch<T>(token: string, path: string, init: RequestInit): P
   });
 
   if (!response.ok) {
-    throw new Error(`Notion request failed: ${response.status}`);
+    throw new NotionRequestError(response.status);
   }
 
   return (await response.json()) as T;
+}
+
+class NotionRequestError extends Error {
+  constructor(readonly status: number) {
+    super(`Notion request failed: ${status}`);
+  }
 }
 
 function toTravelDestination(page: NotionPage): TravelDestination {
@@ -496,6 +554,21 @@ function getImageUrl(page: NotionPage) {
   }
 
   return null;
+}
+
+/**
+ * Notion-hosted files sit at /<workspace-id>/<file-id>/<name>. The last uuid in that path is stable
+ * across signed-URL refreshes but changes when the photo is replaced, which is what we need.
+ */
+function getImageVersion(imageUrl: string) {
+  const fileId = new URL(imageUrl).pathname.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi)?.at(-1);
+
+  if (fileId) {
+    return fileId;
+  }
+
+  // External images have no file id, so fall back to a hash of the URL itself.
+  return Array.from(imageUrl).reduce((hash, character) => (hash * 33 + character.charCodeAt(0)) % 0xffffffff, 5381).toString(36);
 }
 
 function getFirstUrl(properties: Record<string, NotionProperty>, names: string[]) {

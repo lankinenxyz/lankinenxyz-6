@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import OtherContent from "@/components/OtherContent";
 import SplitPage from "@/components/SplitPage";
-import { getWatch, type Watch } from "@/lib/notion-other";
+import { getNotionImageSrc, getWatch, type Watch } from "@/lib/notion-other";
 
 type WatchDetailProps = {
   params: Promise<{ id: string }>;
@@ -29,6 +30,8 @@ export default async function WatchDetail({ params }: WatchDetailProps) {
     notFound();
   }
 
+  const imageSrc = getNotionImageSrc("watches", watch.id, watch.imageUrl);
+
   return (
     <main className="relative h-dvh overflow-hidden bg-[#050706] px-3 py-3 text-white sm:px-4 sm:py-4">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_15%_16%,rgba(135,171,105,0.2),transparent_22rem),radial-gradient(circle_at_84%_14%,rgba(91,118,137,0.22),transparent_25rem),linear-gradient(115deg,#050706_0%,#08100c_44%,#151f11_80%,#050706_100%)]" />
@@ -50,8 +53,10 @@ export default async function WatchDetail({ params }: WatchDetailProps) {
           }
           right={
             <article className="border border-white/10 bg-white/[0.055] p-4 backdrop-blur sm:p-6">
-              {watch.imageUrl ? (
-                <div aria-label={watch.title} className="mb-6 min-h-80 border border-white/10 bg-black/24 bg-cover bg-center" role="img" style={{ backgroundImage: `url(${watch.imageUrl})` }} />
+              {imageSrc ? (
+                <div className="relative mb-6 min-h-80 overflow-hidden border border-white/10 bg-black/24">
+                  <Image alt={watch.title} className="object-cover" fill priority sizes="(max-width: 1024px) 100vw, 760px" src={imageSrc} />
+                </div>
               ) : null}
               <OtherContent blocks={watch.content ?? []} />
             </article>

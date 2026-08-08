@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import SplitPage from "@/components/SplitPage";
-import { getWatches, type Watch } from "@/lib/notion-other";
+import { getNotionImageSrc, getWatches, type Watch } from "@/lib/notion-other";
 
 export const metadata: Metadata = {
   title: "Watches",
@@ -58,14 +59,15 @@ export default async function Watches() {
 }
 
 function WatchCard({ watch }: { watch: Watch }) {
-  const hasImage = Boolean(watch.imageUrl);
+  const imageSrc = getNotionImageSrc("watches", watch.id, watch.imageUrl);
+  const hasImage = Boolean(imageSrc);
 
   return (
     <Link
       className="group relative block min-h-72 overflow-hidden border border-white/10 bg-white/[0.055] backdrop-blur transition hover:border-white/24"
       href={`/hobbies/watches/${watch.id}`}
     >
-      <GridImage imageUrl={watch.imageUrl} label={watch.title} />
+      <GridImage imageSrc={imageSrc} label={watch.title} />
       <div
         className={`absolute inset-0 bg-gradient-to-t from-black/86 via-black/18 to-black/18 transition duration-300 ${
           hasImage ? "opacity-0 group-hover:opacity-100" : "opacity-100"
@@ -84,12 +86,20 @@ function WatchCard({ watch }: { watch: Watch }) {
   );
 }
 
-function GridImage({ imageUrl, label }: { imageUrl: string | null; label: string }) {
-  if (!imageUrl) {
+function GridImage({ imageSrc, label }: { imageSrc: string | null; label: string }) {
+  if (!imageSrc) {
     return <div className="grid min-h-72 place-items-center bg-black/24 font-mono text-xs uppercase tracking-[0.12em] text-white/34">No image</div>;
   }
 
-  return <div aria-label={label} className="min-h-72 bg-cover bg-center transition duration-500 group-hover:scale-105" role="img" style={{ backgroundImage: `url(${imageUrl})` }} />;
+  return (
+    <Image
+      alt={label}
+      className="object-cover transition duration-500 group-hover:scale-105"
+      fill
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 34vw, 250px"
+      src={imageSrc}
+    />
+  );
 }
 
 function EmptyState({ children }: { children: string }) {
