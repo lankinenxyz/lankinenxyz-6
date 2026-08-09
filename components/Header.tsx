@@ -21,6 +21,7 @@ const otherLinks = [
 const contactEmail = "elias@lankinen.xyz";
 const githubUrl = "https://github.com/lankinenxyz";
 const linkedinUrl = "https://www.linkedin.com/in/eliaslankinen";
+const sequenceTimeoutMs = 1500;
 
 function getShortcutModifier() {
   if (typeof navigator === "undefined") {
@@ -30,6 +31,14 @@ function getShortcutModifier() {
   return navigator.platform.toLowerCase().includes("mac") ? "⌘" : "ctrl";
 }
 
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  return target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+}
+
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -37,11 +46,26 @@ export default function Header() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [shortcutModifier] = useState(getShortcutModifier);
   const [status, setStatus] = useState("");
 
   useEffect(() => {
     const isMac = getShortcutModifier() === "⌘";
+    let sequenceTimer: ReturnType<typeof setTimeout> | null = null;
+    let isSequenceActive = false;
+
+    function startSequence() {
+      isSequenceActive = true;
+      sequenceTimer = setTimeout(clearSequence, sequenceTimeoutMs);
+    }
+
+    function clearSequence() {
+      if (sequenceTimer) {
+        clearTimeout(sequenceTimer);
+        sequenceTimer = null;
+      }
+
+      isSequenceActive = false;
+    }
 
     function onKeyDown(event: KeyboardEvent) {
       const otherLink = otherLinks.find((item) => item.shortcut === event.key || event.code === `Digit${item.shortcut}`);
@@ -59,11 +83,7 @@ export default function Header() {
 
       const isModifierPressed = isMac ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
 
-      if (!isModifierPressed || event.altKey || event.shiftKey || isContactOpen) {
-        return;
-      }
-
-      if (event.key.toLowerCase() === "k") {
+      if (isModifierPressed && !event.altKey && !event.shiftKey && !isContactOpen && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setIsMenuOpen(false);
         setIsContactOpen(true);
@@ -72,9 +92,31 @@ export default function Header() {
         return;
       }
 
+      if (isContactOpen || isEditableTarget(event.target) || event.metaKey || event.ctrlKey || event.altKey) {
+        clearSequence();
+
+        return;
+      }
+
+      const isSequenceKey = event.key.toLowerCase() === "g";
+
+      if (!isSequenceActive) {
+        if (isSequenceKey) {
+          startSequence();
+        }
+
+        return;
+      }
+
+      clearSequence();
+
       const link = primaryLinks.find((item) => item.shortcut === event.key || event.code === `Digit${item.shortcut}`);
 
       if (!link) {
+        if (isSequenceKey) {
+          startSequence();
+        }
+
         return;
       }
 
@@ -85,7 +127,10 @@ export default function Header() {
 
     window.addEventListener("keydown", onKeyDown);
 
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      clearSequence();
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [isContactOpen, pathname, router]);
 
   useEffect(() => {
@@ -195,11 +240,8 @@ export default function Header() {
                   <span className="transition-opacity duration-300 group-hover:opacity-0">
                     {(index + 1).toString().padStart(2, "0")}
                   </span>
-                  <span
-                    className="absolute right-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                    suppressHydrationWarning
-                  >
-                    {shortcutModifier}+{link.shortcut}
+                  <span className="absolute right-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    g {link.shortcut}
                   </span>
                 </span>
               </Link>
