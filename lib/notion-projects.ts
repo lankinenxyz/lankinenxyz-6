@@ -234,6 +234,16 @@ function getTitle(properties: Record<string, NotionProperty>) {
 }
 
 function toProject(page: NotionPage): Project {
+  const project = toRawProject(page);
+
+  return isStealthProject(project) ? { ...project, title: maskTitle(project.title), logoUrl: null } : project;
+}
+
+function maskTitle(title: string) {
+  return "*".repeat([...title].length);
+}
+
+function toRawProject(page: NotionPage): Project {
   return {
     id: page.id,
     title: getTitle(page.properties),
