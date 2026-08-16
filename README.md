@@ -20,19 +20,9 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Visitor Globe
+## Analytics
 
-The home page includes a lightweight marker-based globe for countries that have visited the site in the last 30 days. Exact visitor counts are never sent to the browser; the API only returns country markers and coarse intensity buckets.
-
-Create `.env.local` from `.env.local.example` and fill in the GA4 Data API values:
-
-```env
-GA4_PROPERTY_ID=replace-with-numeric-property-id
-GOOGLE_CLIENT_EMAIL=replace-with-service-account-email
-GOOGLE_PRIVATE_KEY="replace-with-service-account-private-key"
-```
-
-Collection is the other half of this. The root layout renders `<GoogleAnalytics />` from `@next/third-parties/google` with measurement ID `G-D2MFN50BT9`, which is what populates the GA4 property. Measurement IDs ship in the page HTML, so it lives in `app/layout.tsx` rather than in an env var. The server-side Data API also needs the numeric GA4 Property ID and a service account with access to that property.
+The root layout renders `<GoogleAnalytics />` from `@next/third-parties/google`. Measurement IDs ship in the page HTML, so the ID lives in `app/layout.tsx` rather than in an env var. Traffic is read in the Google Analytics UI; the site itself does not query the GA4 Data API.
 
 ## Notes
 
