@@ -32,7 +32,7 @@ GOOGLE_CLIENT_EMAIL=replace-with-service-account-email
 GOOGLE_PRIVATE_KEY="replace-with-service-account-private-key"
 ```
 
-`G-D2MFN50BT9` is the Google Analytics Measurement ID. The server-side Data API also needs the numeric GA4 Property ID and a service account with access to that property.
+Collection is the other half of this. The root layout renders `<GoogleAnalytics />` from `@next/third-parties/google` with measurement ID `G-D2MFN50BT9`, which is what populates the GA4 property. Measurement IDs ship in the page HTML, so it lives in `app/layout.tsx` rather than in an env var. The server-side Data API also needs the numeric GA4 Property ID and a service account with access to that property.
 
 ## Notes
 

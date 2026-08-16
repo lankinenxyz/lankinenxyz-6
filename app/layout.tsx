@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+// Measurement IDs are public (they ship in the page HTML), so this is not an env value.
+// It is what feeds the GA4 property that /api/analytics/countries reads back for the globe.
+const gaMeasurementId = "G-D2MFN50BT9";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +62,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
+      <GoogleAnalytics gaId={gaMeasurementId} />
     </html>
   );
 }
