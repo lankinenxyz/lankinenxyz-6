@@ -4,8 +4,12 @@ import { Analytics } from "@vercel/analytics/next"
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// Measurement IDs are public (they ship in the page HTML), so this is not an env value.
-const gaMeasurementId = "G-D2MFN50BT9";
+// Tag IDs are public (they ship in the page HTML), so this is not an env value.
+// This is the Google tag ID, not the G-D2MFN50BT9 measurement ID. That measurement ID is only
+// a destination inside this tag and has no loader container of its own, so requesting
+// gtag/js?id=G-... returns a 404 HTML page that Chrome then blocks via ORB. Loading the tag
+// ID configures its destinations, so page views still land in G-D2MFN50BT9.
+const gaMeasurementId = "GT-NCTZ3HRB";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
