@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/Header";
 import SplitPage from "@/components/SplitPage";
-import { getProjects, isStealthProject, type Project } from "@/lib/notion-projects";
+import { getProjects, type Project } from "@/lib/notion-projects";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -67,7 +67,6 @@ export default async function Projects() {
 }
 
 function ProjectCard({ project }: { project: Project }) {
-  const isStealth = isStealthProject(project);
   const className =
     "group block border border-white/10 bg-white/[0.055] p-4 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08] sm:p-6";
   const content = (
@@ -78,22 +77,23 @@ function ProjectCard({ project }: { project: Project }) {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               {project.year ? <ProjectYear year={project.year} /> : null}
-              {isStealth ? <ProjectStealthTag /> : null}
+              {project.status ? <ProjectStatusTag status={project.status} /> : null}
+              {project.profit !== null ? <ProjectProfitTag profit={project.profit} /> : null}
             </div>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl">{project.title}</h2>
           </div>
         </div>
       </div>
 
-      {!isStealth && (project.intro || project.description) ? (
+      {project.intro || project.description ? (
         <p className="line-clamp-3 max-w-2xl text-base leading-7 text-white/68">{project.intro || project.description}</p>
       ) : null}
 
-      {!isStealth && project.imageUrls.length > 0 ? <ProjectImages imageUrls={project.imageUrls} title={project.title} /> : null}
+      {project.imageUrls.length > 0 ? <ProjectImages imageUrls={project.imageUrls} title={project.title} /> : null}
     </article>
   );
 
-  if (isStealth || !project.hasContent) {
+  if (!project.hasContent) {
     return <div className={className}>{content}</div>;
   }
 
@@ -135,10 +135,18 @@ function ProjectYear({ year }: { year: string }) {
   );
 }
 
-function ProjectStealthTag() {
+function ProjectStatusTag({ status }: { status: string }) {
   return (
     <span className="border border-white/12 bg-black/24 px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-white/58">
-      Stealth
+      {status}
+    </span>
+  );
+}
+
+function ProjectProfitTag({ profit }: { profit: number }) {
+  return (
+    <span className="border border-white/12 bg-black/24 px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-white/58">
+      Profit {formatProfit(profit)}
     </span>
   );
 }
@@ -147,6 +155,15 @@ function formatYear(value: string) {
   const match = value.match(/\d{4}/);
 
   return match?.[0] ?? value;
+}
+
+function formatProfit(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(value);
 }
 
 function ProjectImages({ imageUrls, title }: { imageUrls: string[]; title: string }) {

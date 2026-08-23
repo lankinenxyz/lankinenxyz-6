@@ -43,7 +43,17 @@ export default async function ProjectDetail({ params }: ProjectDetailProps) {
               <Link className="font-mono text-xs uppercase tracking-[0.12em] text-white/42 transition hover:text-lime-100/72" href="/projects">
                 Projects
               </Link>
-              {project.year ? <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62">{formatYear(project.year)}</p> : null}
+              {project.year || project.status || project.profit !== null ? (
+                <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-lime-100/62">
+                  {[
+                    project.year ? formatYear(project.year) : null,
+                    project.status || null,
+                    project.profit === null ? null : `Profit ${formatProfit(project.profit)}`,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              ) : null}
               <h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">{project.title}</h1>
               {project.intro ? <p className="mt-5 max-w-sm text-base leading-7 text-white/72">{project.intro}</p> : null}
               {project.description ? <p className="mt-5 max-w-sm text-base leading-7 text-white/62">{project.description}</p> : null}
@@ -108,4 +118,13 @@ function formatYear(value: string) {
   const match = value.match(/\d{4}/);
 
   return match?.[0] ?? value;
+}
+
+function formatProfit(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(value);
 }

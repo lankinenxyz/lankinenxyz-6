@@ -43,7 +43,17 @@ The `/projects` page reads projects from a Notion database. Share the database w
 NOTION_PROJECTS_DATABASE_ID=replace-with-projects-database-id
 ```
 
-The database should have a `Name` title property plus project fields for `Intro`, `Description`, `Year`, `Logo URL`, `Image URLs`, `Link`, and optional `Status`. Optional URL fields can be Notion URL properties, rich text with comma/newline-separated URLs, or files properties for images. Project cards are sorted by newest `Year` first and open their own page only when the Notion page has body content. If `Status` is `Stealth`, the card only shows the name, year, logo, and a `Stealth` tag, and it does not open a detail page.
+The database should have a `Name` title property, a `Visibility` select property, plus project fields for `Intro`, `Description`, `Year`, `Logo URL`, `Image URLs`, `Link`, and optional `Status` and `Profit`. Optional URL fields can be Notion URL properties, rich text with comma/newline-separated URLs, or files properties for images. Project cards are sorted by newest `Year` first, show their `Status` as a tag, show `Profit` as a euro amount when that number is set, and open their own page only when the Notion page has body content.
+
+`Visibility` controls how much of each project is exposed:
+
+| Value | Behaviour |
+| --- | --- |
+| `Everything` | The full card is shown, and it opens a detail page when the Notion page has body content. |
+| `Title` | The name, year, status, intro, and profit are shown. Description, images, and link are withheld, and the card does not open a detail page. |
+| `Hidden` | The name is replaced with asterisks and the logo is dropped, and the intro and profit are withheld too, so only the year and status remain. |
+
+Any other value, including a blank cell or a renamed column, is treated as `Hidden`. Only `Everything` projects are reachable at `/projects/<id>`; the rest return a 404 even when the URL is known.
 
 ## Investing
 

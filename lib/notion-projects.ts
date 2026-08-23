@@ -82,6 +82,8 @@ export type ProjectBlock = {
   children: ProjectBlock[];
 };
 
+export type ProjectVisibility = "everything" | "title" | "hidden";
+
 export type Project = {
   id: string;
   title: string;
@@ -92,6 +94,8 @@ export type Project = {
   imageUrls: string[];
   link: string | null;
   status: string;
+  profit: number | null;
+  visibility: ProjectVisibility;
   hasContent: boolean;
   content?: ProjectBlock[];
 };
@@ -107,10 +111,14 @@ export async function getProjects(): Promise<Project[]> {
   const pages = await queryDatabase(token, databaseId);
 
   const projects = await Promise.all(
-    pages.map(async (page) => ({
-      ...toProject(page),
-      hasContent: await hasBlockChildren(token, page.id),
-    })),
+    pages.map(async (page) => {
+      const project = toProject(page);
+
+      return {
+        ...project,
+        hasContent: project.visibility === "everything" ? await hasBlockChildren(token, page.id) : false,
+      };
+    }),
   );
 
   return sortProjectsByYearDesc(projects);
@@ -128,7 +136,7 @@ export async function getProject(id: string): Promise<Project | null> {
   const content = await getBlockChildren(token, page.id);
   const project = toProject(page);
 
-  if (isStealthProject(project) || content.length === 0) {
+  if (project.visibility !== "everything" || content.length === 0) {
     return null;
   }
 
@@ -234,9 +242,26 @@ function getTitle(properties: Record<string, NotionProperty>) {
 }
 
 function toProject(page: NotionPage): Project {
-  const project = toRawProject(page);
+  return redactProject(toRawProject(page));
+}
 
-  return isStealthProject(project) ? { ...project, title: maskTitle(project.title), logoUrl: null } : project;
+function redactProject(project: Project): Project {
+  if (project.visibility === "everything") {
+    return project;
+  }
+
+  const withoutDetails = {
+    ...project,
+    description: "",
+    imageUrls: [],
+    link: null,
+  };
+
+  if (project.visibility === "title") {
+    return withoutDetails;
+  }
+
+  return { ...withoutDetails, title: maskTitle(project.title), intro: "", profit: null, logoUrl: null };
 }
 
 function maskTitle(title: string) {
@@ -254,12 +279,24 @@ function toRawProject(page: NotionPage): Project {
     imageUrls: getUrls(page.properties, ["Image URLs", "Image Urls", "Images", "Image URL", "Image Url", "Image"]),
     link: getFirstUrl(page.properties, ["Link", "URL", "Url", "Website", "Site"]),
     status: getPlainText(page.properties, ["Status", "State"]),
+    profit: getNumber(page.properties, ["Profit"]),
+    visibility: getVisibility(page.properties),
     hasContent: false,
   };
 }
 
-export function isStealthProject(project: Project) {
-  return project.status.toLowerCase() === "stealth";
+const projectVisibilities: ProjectVisibility[] = ["everything", "title", "hidden"];
+
+function getVisibility(properties: Record<string, NotionProperty>): ProjectVisibility {
+  const value = getPlainText(properties, ["Visibility"]).toLowerCase();
+
+  return projectVisibilities.find((visibility) => visibility === value) ?? "hidden";
+}
+
+function getNumber(properties: Record<string, NotionProperty>, names: string[]) {
+  const property = getNamedProperty(properties, names);
+
+  return isNumberProperty(property) ? property.number : null;
 }
 
 function getPlainText(properties: Record<string, NotionProperty>, names: string[]) {
