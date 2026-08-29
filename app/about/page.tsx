@@ -7,6 +7,29 @@ export const metadata: Metadata = {
   description: "About Elias Lankinen.",
 };
 
+// Re-render daily so the computed "Present" duration stays current between deploys.
+export const revalidate = 86400;
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// Formats an ongoing period like "Jan 2026 - Present · 8 mos", counting months
+// inclusively to match the finished entries below.
+function presentPeriod(start: string): string {
+  const [monthName, year] = start.split(" ");
+  const now = new Date();
+  const totalMonths =
+    (now.getFullYear() - Number(year)) * 12 + now.getMonth() - MONTHS.indexOf(monthName) + 1;
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  const duration = [
+    years > 0 ? `${years} ${years === 1 ? "yr" : "yrs"}` : null,
+    months > 0 ? `${months} ${months === 1 ? "mo" : "mos"}` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  return `${start} - Present · ${duration}`;
+}
+
 const education = [
   "M.Sc. in Data Science, University of Helsinki",
   "B.Sc. in Computer Science, University of Helsinki",
@@ -26,7 +49,7 @@ const experience: Experience[] = [
   {
     role: "Founding Engineer",
     company: "Elva",
-    period: "Jan 2026 - Present · 7 mos",
+    period: presentPeriod("Jan 2026"),
     location: "Helsinki, Finland",
     description: null,
     logoUrl: "/elva.jpg",
