@@ -219,6 +219,17 @@ export default function Header() {
         </button>
 
         <div className="hidden min-w-0 flex-1 gap-1 lg:flex">
+          <Link
+            aria-current={pathname === "/" ? "page" : undefined}
+            aria-label="Go to home page"
+            href="/"
+            className={`grid size-10 shrink-0 place-items-center border backdrop-blur transition ${pathname === "/"
+              ? "border-white/28 bg-white/[0.18] text-white shadow-[0_0_18px_rgba(255,255,255,0.08)]"
+              : "border-white/10 bg-white/[0.09] text-white/72 hover:border-white/20 hover:bg-white/[0.16] hover:text-white"
+              }`}
+          >
+            <HomeIcon />
+          </Link>
           {primaryLinks.map((link, index) => {
             const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
 
@@ -396,6 +407,14 @@ export default function Header() {
         </div>
       ) : null}
     </>
+  );
+}
+
+function HomeIcon() {
+  return (
+    <svg aria-hidden="true" className="size-4" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 3.1 2.6 11h2.66v9.9h5.08v-6.36h3.32v6.36h5.08V11h2.66L12 3.1Z" />
+    </svg>
   );
 }
 
