@@ -79,6 +79,19 @@ function BlockRenderer({ block }: { block: NoteBlock }) {
           <code>{block.richText.map((item) => item.text).join("")}</code>
         </pre>
       );
+    case "image":
+      if (!block.imageUrl) {
+        return null;
+      }
+
+      return (
+        <div
+          aria-label={block.richText.map((item) => item.text).join("") || "Notion image"}
+          className="min-h-72 border border-white/10 bg-black/24 bg-cover bg-center"
+          role="img"
+          style={{ backgroundImage: `url(${block.imageUrl})` }}
+        />
+      );
     case "divider":
       return <hr className="my-3 border-white/10" />;
     case "toggle":

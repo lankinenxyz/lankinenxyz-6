@@ -68,6 +68,7 @@ export type NoteBlock = {
   type: string;
   richText: NoteRichText[];
   language?: string;
+  imageUrl?: string;
   children: NoteBlock[];
 };
 
@@ -308,7 +309,16 @@ function toNoteBlock(block: NotionBlock): Omit<NoteBlock, "children"> {
     type: block.type,
     richText: toRichText(record.rich_text),
     language: typeof record.language === "string" ? record.language : undefined,
+    imageUrl: getBlockImageUrl(record),
   };
+}
+
+function getBlockImageUrl(record: Record<string, unknown>) {
+  const external = isRecord(record.external) ? record.external.url : null;
+  const file = isRecord(record.file) ? record.file.url : null;
+  const url = typeof external === "string" ? external : typeof file === "string" ? file : null;
+
+  return url && /^https?:\/\//i.test(url) ? url : undefined;
 }
 
 function toRichText(value: unknown): NoteRichText[] {
