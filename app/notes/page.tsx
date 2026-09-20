@@ -35,6 +35,18 @@ export default async function Notes() {
               <p className="mt-6 max-w-sm text-base leading-7 text-white/62 sm:text-lg sm:leading-8">
                 My raw thoughts and observations mainly about startups and tech.
               </p>
+              <a
+                className="mt-6 flex max-w-sm items-center gap-3 border border-lime-200/20 bg-lime-100/[0.06] p-4 text-sm leading-6 text-white/72 backdrop-blur transition hover:border-lime-200/40 hover:bg-lime-100/[0.1]"
+                href="https://security.lankinen.xyz"
+              >
+                <span aria-hidden className="font-mono text-xs uppercase tracking-[0.18em] text-lime-100/70">
+                  Also
+                </span>
+                <span>
+                  I have a separate security blog at{" "}
+                  <span className="font-semibold text-lime-100">security.lankinen.xyz</span>
+                </span>
+              </a>
             </>
           }
           right={
