@@ -1,7 +1,5 @@
 import "server-only";
-
-const notionApiVersion = "2022-06-28";
-const revalidateSeconds = 300;
+import { notionFetch } from "@/lib/notion-fetch";
 
 const placeholderValues = new Set([
   "",
@@ -205,25 +203,6 @@ async function getBlockChildren(token: string, blockId: string): Promise<Investi
       children: block.has_children ? await getBlockChildren(token, block.id) : [],
     })),
   );
-}
-
-async function notionFetch<T>(token: string, path: string, init: RequestInit): Promise<T> {
-  const response = await fetch(`https://api.notion.com/v1${path}`, {
-    ...init,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      "Notion-Version": notionApiVersion,
-      ...init.headers,
-    },
-    next: { revalidate: revalidateSeconds },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Notion request failed: ${response.status} ${await response.text()}`);
-  }
-
-  return (await response.json()) as T;
 }
 
 function sortByDateAsc<T extends { date: string | null }>(items: T[]) {

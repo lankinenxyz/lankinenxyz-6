@@ -1,7 +1,5 @@
 import "server-only";
-
-const notionApiVersion = "2022-06-28";
-const revalidateSeconds = 300;
+import { notionFetch, NotionRequestError } from "@/lib/notion-fetch";
 
 const placeholderValues = new Set(["", "replace-with-notion-integration-token"]);
 
@@ -374,31 +372,6 @@ async function getBlockChildren(token: string, blockId: string): Promise<OtherBl
       children: block.has_children ? await getBlockChildren(token, block.id) : [],
     })),
   );
-}
-
-async function notionFetch<T>(token: string, path: string, init: RequestInit): Promise<T> {
-  const response = await fetch(`https://api.notion.com/v1${path}`, {
-    ...init,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      "Notion-Version": notionApiVersion,
-      ...init.headers,
-    },
-    next: { revalidate: revalidateSeconds },
-  });
-
-  if (!response.ok) {
-    throw new NotionRequestError(response.status);
-  }
-
-  return (await response.json()) as T;
-}
-
-class NotionRequestError extends Error {
-  constructor(readonly status: number) {
-    super(`Notion request failed: ${status}`);
-  }
 }
 
 function toTravelDestination(page: NotionPage): TravelDestination {
