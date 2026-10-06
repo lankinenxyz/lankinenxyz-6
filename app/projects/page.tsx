@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/Header";
+import ProjectList from "@/components/ProjectList";
 import SplitPage from "@/components/SplitPage";
 import { getProjects, type Project } from "@/lib/notion-projects";
 
@@ -51,13 +52,13 @@ export default async function Projects() {
                 </p>
               ) : null}
 
-              <ol className="grid gap-5">
-                {projects.map((project) => (
-                  <li key={project.id}>
-                    <ProjectCard project={project} />
-                  </li>
-                ))}
-              </ol>
+              <ProjectList
+                items={projects.map((project) => ({
+                  id: project.id,
+                  masked: project.visibility === "hidden",
+                  card: <ProjectCard project={project} />,
+                }))}
+              />
             </>
           }
         />
